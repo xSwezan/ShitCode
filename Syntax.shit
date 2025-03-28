@@ -1,0 +1,18 @@
+create number called i
+set i to 50
+
+create function called hello using name and age:
+    call talk with "Hello " add name add "! You are " add age " years old!"
+
+if X equals 50:
+    call hello with "Eddie"
+
+create number called i
+repeat 5 times:
+    increase i by 1
+    call talk with "Test " add i
+
+create number called counter
+while not counter equals 50:
+    increase counter by 1
+    call talk with "Counting..."
