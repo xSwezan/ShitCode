@@ -8,6 +8,8 @@ public class Lexer {
         NUMBER,
         STRING,
 
+        COMMA, // ,
+
         OPEN_PAREN, // (
         CLOSE_PAREN, // )
 
@@ -25,6 +27,7 @@ public class Lexer {
         // Function
         KEYWORD_CALL,
         KEYWORD_WITH,
+        KEYWORD_RETURN,
 
         // Variable
         KEYWORD_TO,
@@ -41,6 +44,12 @@ public class Lexer {
         KEYWORD_AND,
         KEYWORD_OR,
         KEYWORD_OPERATOR_EQUALS,
+
+        OPERATOR_ADD,
+        OPERATOR_SUBTRACT,
+        OPERATOR_DIVIDE,
+        OPERATOR_MULTIPLY,
+        OPERATOR_MODULUS,
 
         NEW_LINE,
         END_OF_FILE,
@@ -77,6 +86,36 @@ public class Lexer {
                 Token token = new Token();
                 token.raw = s;
                 token.type = TokenType.CLOSE_SCOPE;
+                tokens.add(token);
+            } else if (c == ',') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.COMMA;
+                tokens.add(token);
+            } else if (c == '+') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.OPERATOR_ADD;
+                tokens.add(token);
+            } else if (c == '-') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.OPERATOR_SUBTRACT;
+                tokens.add(token);
+            } else if (c == '*') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.OPERATOR_MULTIPLY;
+                tokens.add(token);
+            } else if (c == '%') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.OPERATOR_MULTIPLY;
+                tokens.add(token);
+            } else if (c == '/') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.OPERATOR_DIVIDE;
                 tokens.add(token);
             } else if (c == '\n') {
                 Token token = new Token();
@@ -150,8 +189,16 @@ public class Lexer {
             }
         }
 
+        { // New line
+            Token token = new Token();
+            token.raw = "\n";
+            token.type = TokenType.NEW_LINE;
+            tokens.add(token);
+        }
+
         { // End of file
             Token token = new Token();
+            token.raw = "\u001a";
             token.type = TokenType.END_OF_FILE;
             tokens.add(token);
         }
@@ -169,6 +216,7 @@ public class Lexer {
 
             case "call": token.type = TokenType.KEYWORD_CALL; break;
             case "with": token.type = TokenType.KEYWORD_WITH; break;
+            case "return": token.type = TokenType.KEYWORD_RETURN; break;
 
             case "to": token.type = TokenType.KEYWORD_TO; break;
             case "set": token.type = TokenType.KEYWORD_SET; break;

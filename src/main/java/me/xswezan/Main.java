@@ -7,19 +7,43 @@ import me.xswezan.Lexer.Token;
 public class Main {
     public static void main(String[] args) {
         Vector<Token> tokens = Lexer.Lexilize("""
-            create number called testNumber
-            set testNumber to 50.025
+create number called i
+set i to 50
 
-            call talk with create function using name, dog
+create function called hello using string name, string age {
+    call talk with "Hello " + name + "! You are " + age + " years old!"
+}
 
-            create function called greet {
-                call talk with "Hello, world!"
-            }
+if i equals 50 {
+    call hello with "Eddie", 17
+}
+
+create number called i
+repeat 5 times {
+    set i to i + 1
+    call talk with "Test ", i
+}
+
+create number called counter
+while not counter equals 50 {
+    set counter to counter + 1
+    call talk with "Counting..."
+}
+
+create number called x
+create number called y
+
+set x to 10
+set y to 20
         """);
 
         final int ALIGN = 20;
         for (Token token : tokens) {
-            System.out.println("\u001B[30;40;1m " + token.raw.replace('\n', ' ') + " ".repeat(Math.max(0, ALIGN - token.raw.length())) + "\u001B[30;43;1m " + token.type + " \u001B[0m");
+            String raw = token.raw == null ? "" : token.raw;
+            System.out.println("\u001B[30;40;1m " + raw.replace('\n', ' ') + " ".repeat(Math.max(0, ALIGN - raw.length())) + "\u001B[30;43;1m " + token.type + " \u001B[0m");
         }
+
+        Parser parser = new Parser();
+        parser.Parse(tokens);
     }
 }

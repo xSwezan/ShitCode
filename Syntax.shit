@@ -3,8 +3,8 @@ set i to 50
 
 :) Hello this is a comment!
 
-create function called hello using name, age {
-    call talk with "Hello " add name add "! You are " add age add " years old!"
+create function called hello using string name, string age {
+    call talk with "Hello " + name + "! You are " + age + " years old!"
 }
 
 if i equals 50 {
