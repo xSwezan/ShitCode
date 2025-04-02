@@ -37,6 +37,8 @@ public class Parser {
     static class FunctionDeclarationArgument {
         String type;
         String name;
+
+        public String toString() { return name + ": " + type; }
     }
     static class FunctionDeclarationStatement extends VariableDeclarationStatement {
         String name;
@@ -77,11 +79,6 @@ public class Parser {
     |  Expression  |
     \*------------*/
 
-    enum ExpressionKind {
-        BINARY_EXPRESSION,
-        CALL_EXPRESSION,
-    }
-
     enum OperatorType {
         ADD,
         SUBTRACT,
@@ -103,27 +100,39 @@ public class Parser {
         Expression left;
         Expression right;
         OperatorType operator;
+
+        public String toString() { return "BINEXPR(" + left + ", \033[31m" + operator + "\033[0m, " + right + ")"; }
     }
 
     static class UnaryExpression extends Expression {
         Expression expression;
-        OperatorType operator;
+        UnaryOperatorType operator;
+
+        public String toString() { return "UNARYEXPR(\033[31m" + operator + "\033[0m, " + expression + ")"; }
     }
 
     static class NumericLiteral extends Expression {
         double value;
+
+        public String toString() { return "NUMLTRL(\033[36m" + value + "\033[0m)"; }
     }
 
     static class StringLiteral extends Expression {
         String value;
+
+        public String toString() { return "STRLTRL(\033[32m" + value + "\033[0m)"; }
     }
 
     static class Identifier extends Expression {
         String symbol;
+
+        public String toString() { return "IDENTIF(" + symbol + ")"; }
     }
 
     static class ReturnExpression extends Expression {
         Expression content;
+
+        public String toString() { return "RETEXPR(" + content + ")"; }
     }
 
     /*--------*\
@@ -132,7 +141,7 @@ public class Parser {
 
     Vector<Token> tokens = new Vector<Token>();
 
-    public void Parse(Vector<Token> tokenList) {
+    public Body Parse(Vector<Token> tokenList) {
         tokens = tokenList;
 
         Body program = new Body();
@@ -145,15 +154,17 @@ public class Parser {
         }
 
         for (Statement statement : program.statements) {
-            if (statement instanceof FunctionDeclarationStatement stmt) { System.out.println("FUNDECL: " + stmt.name + "(" + stmt.arguments + ")"); }
-            else if (statement instanceof VariableDeclarationStatement stmt) { System.out.println("VARDECL: " + stmt.name + ": " + stmt.type); }
-            else if (statement instanceof VariableAssignmentStatement stmt) { System.out.println("VARASGN: " + stmt.name + ": " + stmt.value); }
-            else if (statement instanceof RepeatStatement stmt) { System.out.println("REPSTMT: " + stmt.repeatTimes); }
-            else if (statement instanceof WhileStatement stmt) { System.out.println("WHLSTMT: " + stmt.condition); }
-            else if (statement instanceof CallStatement stmt) { System.out.println("CALSTMT: " + stmt.functionName + "(" + stmt.arguments + ")"); }
-            else if (statement instanceof IfStatement stmt) { System.out.println("IFSTMT: " + stmt.condition); }
-            else if (statement instanceof ScopeStatement stmt) { System.out.println("SCPSTMT: " + stmt.body); }
+            if (statement instanceof FunctionDeclarationStatement stmt) { System.out.println("[\033[33mFUNDECL\033[0m] " + stmt.name + "(" + stmt.arguments + ")"); }
+            else if (statement instanceof VariableDeclarationStatement stmt) { System.out.println("[\033[33mVARDECL\033[0m] " + stmt.name + ": " + stmt.type); }
+            else if (statement instanceof VariableAssignmentStatement stmt) { System.out.println("[\033[33mVARASGN\033[0m] " + stmt.name + ": " + stmt.value); }
+            else if (statement instanceof RepeatStatement stmt) { System.out.println("[\033[33mREPSTMT\033[0m] " + stmt.repeatTimes); }
+            else if (statement instanceof WhileStatement stmt) { System.out.println("[\033[33mWHLSTMT\033[0m] " + stmt.condition); }
+            else if (statement instanceof CallStatement stmt) { System.out.println("[\033[33mCALSTMT\033[0m] " + stmt.functionName + "(" + stmt.arguments + ")"); }
+            else if (statement instanceof IfStatement stmt) { System.out.println("[\033[33mIF-STMT\033[0m] " + stmt.condition); }
+            else if (statement instanceof ScopeStatement stmt) { System.out.println("[\033[33mSCPSTMT\033[0m] " + stmt.body); }
         }
+
+        return program;
     }
 
     /*---------*\
@@ -359,15 +370,21 @@ public class Parser {
     }
 
     private Expression parseExpression() {
-        return parseBooleanExpression();
+        return parseUnaryExpression();
     }
 
     private Expression parseUnaryExpression() {
         if (atIs(TokenType.KEYWORD_NOT)) {
+            eat(); // Eat operator
 
+            UnaryExpression expression = new UnaryExpression();
+            expression.expression = parseExpression();
+            expression.operator = UnaryOperatorType.NOT;
+
+            return expression;
         }
 
-        return parseAdditiveExpression();
+        return parseBooleanExpression();
     }
 
     // left equals right

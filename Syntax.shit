@@ -1,7 +1,8 @@
 create number called i
 set i to 50
 
-:) Hello this is a comment!
+create boolean called ok
+set ok to not not 1 equals 2
 
 create function called hello using string name, string age {
     call talk with "Hello " + name + "! You are " + age + " years old!"
@@ -13,13 +14,13 @@ if i equals 50 {
 
 create number called i
 repeat 5 times {
-    increase i with 1
+    set i to i + 1
     call talk with "Test ", i
 }
 
 create number called counter
 while not counter equals 50 {
-    increase counter with 1
+    set counter to counter + 1
     call talk with "Counting..."
 }
 

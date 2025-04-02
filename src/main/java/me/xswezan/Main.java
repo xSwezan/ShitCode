@@ -2,15 +2,21 @@ package me.xswezan;
 
 import java.util.Vector;
 
+import me.xswezan.Environment.RuntimeNativeFunction;
+import me.xswezan.Environment.RuntimeValue;
 import me.xswezan.Lexer.Token;
+import me.xswezan.Parser.Body;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] _args) {
         Vector<Token> tokens = Lexer.Lexilize("""
 create number called i
 set i to 50
 
-create function called hello using string name, string age {
+create boolean called ok
+set ok to not not 1 equals 2
+
+create function called hello using string name, number age {
     call talk with "Hello " + name + "! You are " + age + " years old!"
 }
 
@@ -37,6 +43,12 @@ set x to 10
 set y to 20
         """);
 
+        Environment global = new Environment();
+
+        global.SetVariable("talk", new RuntimeNativeFunction(args -> {
+            return null;
+        }));
+
         final int ALIGN = 20;
         for (Token token : tokens) {
             String raw = token.raw == null ? "" : token.raw;
@@ -44,6 +56,9 @@ set y to 20
         }
 
         Parser parser = new Parser();
-        parser.Parse(tokens);
+        Body program = parser.Parse(tokens);
+
+        Interpreter interpreter = new Interpreter();
+        interpreter.Evaluate(program);
     }
 }
