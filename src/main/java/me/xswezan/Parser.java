@@ -6,27 +6,16 @@ import me.xswezan.Lexer.Token;
 import me.xswezan.Lexer.TokenType;
 
 public class Parser {
+    static class Node {}
+
     /*-----------*\
     |  Statement  |
     \*-----------*/
 
-    enum StatementKind {
-        FUNCTION_DECLARATION,
-        VARIABLE_DECLARATION,
-        VARIABLE_ASSIGNMENT,
-        REPEAT_STATEMENT,
-        WHILE_STATEMENT,
-        SCOPE_STATEMENT,
-        CALL_STATEMENT,
-        IF_STATEMENT,
-    }
-
-    static class Statement {
-        StatementKind kind;
-    }
+    static class Statement extends Node {}
 
     static class Body {
-        Vector<Statement> statements = new Vector<Statement>();
+        Vector<Node> nodes = new Vector<Node>();
     }
 
     static class VariableDeclarationStatement extends Statement {
@@ -34,7 +23,7 @@ public class Parser {
         String name;
     }
 
-    static class FunctionDeclarationArgument {
+    static class FunctionDeclarationParameter {
         String type;
         String name;
 
@@ -43,7 +32,7 @@ public class Parser {
     static class FunctionDeclarationStatement extends VariableDeclarationStatement {
         String name;
         Body body;
-        Vector<FunctionDeclarationArgument> arguments = new Vector<FunctionDeclarationArgument>();
+        Vector<FunctionDeclarationParameter> parameters = new Vector<FunctionDeclarationParameter>();
     }
 
     static class VariableAssignmentStatement extends Statement {
@@ -59,11 +48,6 @@ public class Parser {
     static class WhileStatement extends Statement {
         Expression condition;
         Body body;
-    }
-
-    static class CallStatement extends Statement {
-        String functionName;
-        Vector<Expression> arguments = new Vector<Expression>();
     }
 
     static class IfStatement extends Statement {
@@ -92,9 +76,7 @@ public class Parser {
         NOT,
     }
 
-    static class Expression {
-
-    }
+    static class Expression extends Node {}
 
     static class BinaryExpression extends Expression {
         Expression left;
@@ -123,10 +105,15 @@ public class Parser {
         public String toString() { return "STRLTRL(\033[32m" + value + "\033[0m)"; }
     }
 
-    static class Identifier extends Expression {
+    static class IdentifierExpression extends Expression {
         String symbol;
 
         public String toString() { return "IDENTIF(" + symbol + ")"; }
+    }
+
+    static class CallExpression extends Expression {
+        String functionName;
+        Vector<Expression> arguments = new Vector<Expression>();
     }
 
     static class ReturnExpression extends Expression {
@@ -150,18 +137,7 @@ public class Parser {
             Statement statement = parseStatement();
             if (statement == null) continue;
 
-            program.statements.add(statement);
-        }
-
-        for (Statement statement : program.statements) {
-            if (statement instanceof FunctionDeclarationStatement stmt) { System.out.println("[\033[33mFUNDECL\033[0m] " + stmt.name + "(" + stmt.arguments + ")"); }
-            else if (statement instanceof VariableDeclarationStatement stmt) { System.out.println("[\033[33mVARDECL\033[0m] " + stmt.name + ": " + stmt.type); }
-            else if (statement instanceof VariableAssignmentStatement stmt) { System.out.println("[\033[33mVARASGN\033[0m] " + stmt.name + ": " + stmt.value); }
-            else if (statement instanceof RepeatStatement stmt) { System.out.println("[\033[33mREPSTMT\033[0m] " + stmt.repeatTimes); }
-            else if (statement instanceof WhileStatement stmt) { System.out.println("[\033[33mWHLSTMT\033[0m] " + stmt.condition); }
-            else if (statement instanceof CallStatement stmt) { System.out.println("[\033[33mCALSTMT\033[0m] " + stmt.functionName + "(" + stmt.arguments + ")"); }
-            else if (statement instanceof IfStatement stmt) { System.out.println("[\033[33mIF-STMT\033[0m] " + stmt.condition); }
-            else if (statement instanceof ScopeStatement stmt) { System.out.println("[\033[33mSCPSTMT\033[0m] " + stmt.body); }
+            program.nodes.add(statement);
         }
 
         return program;
@@ -201,7 +177,6 @@ public class Parser {
             case TokenType.KEYWORD_CREATE: return parseVariableDeclaration();
             case TokenType.KEYWORD_REPEAT: return parseRepeatStatement();
             case TokenType.KEYWORD_WHILE: return parseWhileStatement();
-            case TokenType.KEYWORD_CALL: return parseCallStatement();
             case TokenType.KEYWORD_IF: return parseIfStatement();
             case TokenType.OPEN_SCOPE: return parseScopeStatement();
             case TokenType.NEW_LINE: eat(); break;
@@ -221,7 +196,6 @@ public class Parser {
 
         if (variableType.raw.equals("function")) {
             FunctionDeclarationStatement statement = new FunctionDeclarationStatement();
-            statement.kind = StatementKind.FUNCTION_DECLARATION;
             statement.name = name.raw;
             statement.type = variableType.raw;
 
@@ -232,10 +206,10 @@ public class Parser {
                     Token argumentType = expect(TokenType.IDENTIFIER, "Expected type identifier for function argument!");
                     Token argumentName = expect(TokenType.IDENTIFIER, "Expected argument name identifier following type identifier in function declaration!");
 
-                    FunctionDeclarationArgument argument = new FunctionDeclarationArgument();
+                    FunctionDeclarationParameter argument = new FunctionDeclarationParameter();
                     argument.type = argumentType.raw;
                     argument.name = argumentName.raw;
-                    statement.arguments.add(argument);
+                    statement.parameters.add(argument);
                 }
 
                 while (atIs(TokenType.COMMA)) {
@@ -244,21 +218,19 @@ public class Parser {
                     Token argumentType = expect(TokenType.IDENTIFIER, "Expected type identifier for function argument!");
                     Token argumentName = expect(TokenType.IDENTIFIER, "Expected argument name identifier following type identifier in function declaration!");
 
-                    FunctionDeclarationArgument argument = new FunctionDeclarationArgument();
+                    FunctionDeclarationParameter argument = new FunctionDeclarationParameter();
                     argument.type = argumentType.raw;
                     argument.name = argumentName.raw;
-                    statement.arguments.add(argument);
+                    statement.parameters.add(argument);
                 }
             }
 
             statement.body = parseBody();
 
-
             return statement;
         }
 
         VariableDeclarationStatement statement = new VariableDeclarationStatement();
-        statement.kind = StatementKind.VARIABLE_DECLARATION;
         statement.name = name.raw;
         statement.type = variableType.raw;
 
@@ -274,7 +246,6 @@ public class Parser {
         Expression value = parseExpression();
 
         VariableAssignmentStatement statement = new VariableAssignmentStatement();
-        statement.kind = StatementKind.VARIABLE_ASSIGNMENT;
         statement.name = variableName.raw;
         statement.value = value;
 
@@ -288,7 +259,6 @@ public class Parser {
         expect(TokenType.KEYWORD_TIMES, "Expected 'times' keyword following repeat number expression!");
 
         RepeatStatement statement = new RepeatStatement();
-        statement.kind = StatementKind.REPEAT_STATEMENT;
         statement.repeatTimes = repeatTimes;
         statement.body = parseBody();
 
@@ -301,7 +271,6 @@ public class Parser {
         Expression condition = parseExpression();
 
         WhileStatement statement = new WhileStatement();
-        statement.kind = StatementKind.WHILE_STATEMENT;
         statement.condition = condition;
         statement.body = parseBody();
 
@@ -314,7 +283,6 @@ public class Parser {
         Token token = expect(TokenType.IDENTIFIER, "Expected function name identifier following 'call' keyword!");
 
         CallStatement statement = new CallStatement();
-        statement.kind = StatementKind.CALL_STATEMENT;
         statement.functionName = token.raw;
 
         if (atIs(TokenType.KEYWORD_WITH)) {
@@ -340,7 +308,6 @@ public class Parser {
         eat(); // Eat if keyword
 
         IfStatement statement = new IfStatement();
-        statement.kind = StatementKind.IF_STATEMENT;
         statement.condition = parseExpression();
         statement.body = parseBody();
 
@@ -349,7 +316,6 @@ public class Parser {
 
     private ScopeStatement parseScopeStatement() {
         ScopeStatement statement = new ScopeStatement();
-        statement.kind = StatementKind.SCOPE_STATEMENT;
         statement.body = parseBody();
 
         return statement;
@@ -361,7 +327,7 @@ public class Parser {
         expect(TokenType.OPEN_SCOPE, "Expected '{'!");
 
         while (!atIs(TokenType.END_OF_FILE) && !atIs(TokenType.CLOSE_SCOPE)) {
-            body.statements.add(parseStatement());
+            body.nodes.add(parseStatement());
         }
 
         expect(TokenType.CLOSE_SCOPE, "Expected '}'!");
@@ -452,7 +418,7 @@ public class Parser {
     private Expression parsePrimaryExpression() {
         switch (at().type) {
             case TokenType.IDENTIFIER: {
-                Identifier identifier = new Identifier();
+                IdentifierExpression identifier = new IdentifierExpression();
                 identifier.symbol = eat().raw;
                 return identifier;
             }

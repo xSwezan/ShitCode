@@ -1,6 +1,10 @@
 package me.xswezan;
 
 import java.util.HashMap;
+import java.util.Vector;
+
+import me.xswezan.Parser.Body;
+import me.xswezan.Parser.FunctionDeclarationParameter;
 
 public class Environment {
     /*----------------*\
@@ -9,25 +13,35 @@ public class Environment {
 
     public static class RuntimeValue {}
 
-    //> RuntimeNumber
     public static class RuntimeNumber extends RuntimeValue {
         double value;
 
         RuntimeNumber(double value) {
             this.value = value;
         }
+
+        public String toString() { return Double.toString(value); }
     }
 
-    //> RuntimeString
     public static class RuntimeString extends RuntimeValue {
         String value;
 
         RuntimeString(String value) {
             this.value = value;
         }
+
+        public String toString() { return value; }
+    }
+    public static class RuntimeNothing extends RuntimeValue {
+        public String toString() { return "<nothing>"; }
     }
 
-    //> RuntimeNativeFunction
+    public static class RuntimeFunction extends RuntimeValue {
+        Environment declarationEnvironment;
+        Vector<FunctionDeclarationParameter> parameters;
+        Body body;
+    }
+
     @FunctionalInterface
     public interface NativeFunction {
         RuntimeValue call(RuntimeValue[] args);
@@ -42,6 +56,8 @@ public class Environment {
         public RuntimeValue call(RuntimeValue[] args) {
             return implementation.call(args);
         }
+
+        public String toString() { return "NativeFunction<" + implementation.hashCode() + ">"; }
     }
 
     /*-------------*\

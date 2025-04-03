@@ -59,6 +59,6 @@ set y to 20
         Body program = parser.Parse(tokens);
 
         Interpreter interpreter = new Interpreter();
-        interpreter.Evaluate(program);
+        interpreter.EvaluateBody(program, global);
     }
 }
