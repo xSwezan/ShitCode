@@ -63,7 +63,7 @@ public class Parser {
     |  Expression  |
     \*------------*/
 
-    enum OperatorType {
+    enum BinaryOperatorType {
         ADD,
         SUBTRACT,
         MULTIPLY,
@@ -81,7 +81,7 @@ public class Parser {
     static class BinaryExpression extends Expression {
         Expression left;
         Expression right;
-        OperatorType operator;
+        BinaryOperatorType operator;
 
         public String toString() { return "BINEXPR(" + left + ", \033[31m" + operator + "\033[0m, " + right + ")"; }
     }
@@ -134,10 +134,10 @@ public class Parser {
         Body program = new Body();
 
         while (!atIs(TokenType.END_OF_FILE)) {
-            Statement statement = parseStatement();
-            if (statement == null) continue;
+            Node node = parseStatement();
+            if (node == null) continue;
 
-            program.nodes.add(statement);
+            program.nodes.add(node);
         }
 
         return program;
@@ -171,7 +171,7 @@ public class Parser {
     |  Parsing  |
     \*---------*/
 
-    private Statement parseStatement() {
+    private Node parseStatement() {
         switch (at().type) {
             case TokenType.KEYWORD_SET: return parseVariableAssignment();
             case TokenType.KEYWORD_CREATE: return parseVariableDeclaration();
@@ -180,7 +180,8 @@ public class Parser {
             case TokenType.KEYWORD_IF: return parseIfStatement();
             case TokenType.OPEN_SCOPE: return parseScopeStatement();
             case TokenType.NEW_LINE: eat(); break;
-            default: throw new RuntimeException("Unexpected token: " + at().raw + " (" + at().type + ")");
+            default: return parseExpression();
+            // default: throw new RuntimeException("Unexpected token: " + at().raw + " (" + at().type + ")");
         }
 
         return null;
@@ -274,33 +275,6 @@ public class Parser {
         statement.condition = condition;
         statement.body = parseBody();
 
-        return null;
-    }
-
-    private CallStatement parseCallStatement() {
-        eat(); // Eat call keyword
-
-        Token token = expect(TokenType.IDENTIFIER, "Expected function name identifier following 'call' keyword!");
-
-        CallStatement statement = new CallStatement();
-        statement.functionName = token.raw;
-
-        if (atIs(TokenType.KEYWORD_WITH)) {
-            eat(); // Eat with keyword
-
-            { // Add first argument
-                Expression argument = parseExpression();
-                statement.arguments.add(argument);
-            }
-
-            while (atIs(TokenType.COMMA)) {
-                eat(); // Eat comma
-
-                Expression argument = parseExpression();
-                statement.arguments.add(argument);
-            }
-        }
-
         return statement;
     }
 
@@ -336,6 +310,38 @@ public class Parser {
     }
 
     private Expression parseExpression() {
+        return parseCallExpression();
+    }
+
+    private Expression parseCallExpression() {
+        if (atIs(TokenType.KEYWORD_CALL)) {
+            eat(); // Eat call keyword
+
+            Token token = expect(TokenType.IDENTIFIER, "Expected function name identifier following 'call' keyword!");
+
+            CallExpression expression = new CallExpression();
+            expression.functionName = token.raw;
+
+            if (atIs(TokenType.KEYWORD_WITH)) {
+                eat(); // Eat with keyword
+
+                { // Add first argument
+                    Expression argument = parseExpression();
+                    expression.arguments.add(argument);
+                }
+
+                while (atIs(TokenType.COMMA)) {
+                    eat(); // Eat comma
+
+                    Expression argument = parseExpression();
+                    expression.arguments.add(argument);
+                }
+            }
+
+            return expression;
+        }
+
+
         return parseUnaryExpression();
     }
 
@@ -365,7 +371,7 @@ public class Parser {
             BinaryExpression expression = new BinaryExpression();
             expression.left = left;
             expression.right = right;
-            expression.operator = OperatorType.EQUALS;
+            expression.operator = BinaryOperatorType.EQUALS;
             left = expression;
         }
 
@@ -386,7 +392,7 @@ public class Parser {
             BinaryExpression expression = new BinaryExpression();
             expression.left = left;
             expression.right = right;
-            expression.operator = isAdd ? OperatorType.ADD : OperatorType.SUBTRACT;
+            expression.operator = isAdd ? BinaryOperatorType.ADD : BinaryOperatorType.SUBTRACT;
             left = expression;
         }
 
@@ -408,7 +414,7 @@ public class Parser {
             BinaryExpression expression = new BinaryExpression();
             expression.left = left;
             expression.right = right;
-            expression.operator = isMultiply ? OperatorType.MULTIPLY : (isDivide ? OperatorType.DIVIDE : OperatorType.MODULUS);
+            expression.operator = isMultiply ? BinaryOperatorType.MULTIPLY : (isDivide ? BinaryOperatorType.DIVIDE : BinaryOperatorType.MODULUS);
             left = expression;
         }
 

@@ -32,6 +32,17 @@ public class Environment {
 
         public String toString() { return value; }
     }
+
+    public static class RuntimeBoolean extends RuntimeValue {
+        boolean value;
+
+        RuntimeBoolean(boolean value) {
+            this.value = value;
+        }
+
+        public String toString() { return Boolean.toString(value); }
+    }
+
     public static class RuntimeNothing extends RuntimeValue {
         public String toString() { return "<nothing>"; }
     }

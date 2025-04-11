@@ -77,6 +77,7 @@ public class Lexer {
                 Token token = new Token();
                 token.raw = s;
                 token.type = TokenType.CLOSE_PAREN;
+                tokens.add(token);
             } else if (c == '{') {
                 Token token = new Token();
                 token.raw = s;
@@ -208,8 +209,6 @@ public class Lexer {
 
     private static void processIdentifier(Token token) {
         switch (token.raw) {
-            case "add": token.type = TokenType.KEYWORD_ADD; break;
-
             case "while": token.type = TokenType.KEYWORD_WHILE; break;
             case "repeat": token.type = TokenType.KEYWORD_REPEAT; break;
             case "times": token.type = TokenType.KEYWORD_TIMES; break;

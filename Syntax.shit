@@ -1,31 +1,21 @@
-create number called i
-set i to 50
-
-create boolean called ok
-set ok to not not 1 equals 2
-
 create function called hello using string name, string age {
     call talk with "Hello " + name + "! You are " + age + " years old!"
 }
 
-if i equals 50 {
-    call hello with "Eddie", 17
-}
+create number called loop
+set loop to 0
 
-create number called i
 repeat 5 times {
-    set i to i + 1
-    call talk with "Test ", i
+    set loop to loop + 1
+    call hello with "Eddie", loop
 }
 
-create number called counter
-while not counter equals 50 {
-    set counter to counter + 1
-    call talk with "Counting..."
+create string called input
+set input to call takeInput
+
+create number called repeatTimes
+set repeatTimes to call toNumber with input
+
+repeat repeatTimes times {
+    call talk with "time"
 }
-
-create number called x
-create number called y
-
-set x to 10
-set y to 20
