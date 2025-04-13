@@ -1,9 +1,33 @@
+import "test.shit" as test
+
+create function called newPlayer {
+    create bundle called player
+
+    create number called health in player
+    set player->health to 10
+    call player->health with "Hello"
+
+    return player
+}
+
+create bundle called player
+set player to call newPlayer
+
 create function called hello using string name, string age {
     call talk with "Hello " + name + "! You are " + age + " years old!"
 }
 
 create number called loop
 set loop to 0
+
+{
+    create list called myList
+    append "Hello" to myList
+
+    create number called index
+    set index to find "Hello" in myList
+    remove index from myList
+}
 
 repeat 5 times {
     set loop to loop + 1
