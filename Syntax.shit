@@ -1,5 +1,7 @@
 import "test.shit" as test
 
+call test->doSomething
+
 create function called newPlayer {
     create bundle called player
 
@@ -13,8 +15,18 @@ create function called newPlayer {
 create bundle called player
 set player to call newPlayer
 
+call talk with "Player health: " + player->health
+
 create function called hello using string name, string age {
     call talk with "Hello " + name + "! You are " + age + " years old!"
+}
+
+create function called sort using function filter {
+
+}
+
+call sort with create function {
+    
 }
 
 create number called loop
