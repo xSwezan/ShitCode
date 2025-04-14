@@ -1,0 +1,235 @@
+# AI Generated Unit Tests for Functions
+
+#>-----------------------------------------<#
+#>- Basic Function Definition and Calling -<#
+#>-----------------------------------------<#
+
+call talk with "Basic Function Definition and Calling"
+
+create function called simpleGreeting {
+	call talk with "Hello, World!"
+}
+
+create function called greet using string name {
+	call talk with "Hello, " + name + "!"
+}
+
+create function called add using number a, number b {
+	return a + b
+}
+
+call talk with "Calling simpleGreeting function:"
+call simpleGreeting
+
+call talk with "Calling greet function with parameter:"
+call greet with "Alice"
+
+call talk with "Calling add function with parameters:"
+create number called sum
+set sum to (call add with 5, 3)
+call talk with "5 + 3 = " + (call toString with sum)
+
+#>--------------------------------<#
+#>- Functions with Return Values -<#
+#>--------------------------------<#
+
+call talk with "Functions with Return Values"
+
+create function called multiply using number a, number b {
+	return a * b
+}
+
+create function called joinStrings using string str1, string str2 {
+	return str1 + " " + str2
+}
+
+create function called isEven using number num {
+	create number called remainder
+	set remainder to num % 2
+	return remainder equals 0
+}
+
+call talk with "multiply(4, 6) - Expected: 24, Result: " + (call toString with (call multiply with 4, 6))
+call talk with "joinStrings('Hello', 'World') - Expected: Hello World, Result: " + (call joinStrings with "Hello", "World")
+call talk with "isEven(4) - Expected: true, Result: " + (call toString with (call isEven with 4))
+call talk with "isEven(7) - Expected: false, Result: " + (call toString with (call isEven with 7))
+
+#>----------------------<#
+#>- Function Recursion -<#
+#>----------------------<#
+
+call talk with "Function Recursion"
+
+create function called factorial using number n {
+	if n equals 0 {
+		return 1
+	}
+	return n * (call factorial with n - 1)
+}
+
+create function called fibonacci using number n {
+	if n equals 0 {
+		return 0
+	}
+	if n equals 1 {
+		return 1
+	}
+	return (call fibonacci with n - 1) + (call fibonacci with n - 2)
+}
+
+call talk with "factorial(5) - Expected: 120, Result: " + (call toString with (call factorial with 5))
+call talk with "fibonacci(7) - Expected: 13, Result: " + (call toString with (call fibonacci with 7))
+
+#>-------------------------------<#
+#>- Function with Complex Logic -<#
+#>-------------------------------<#
+
+call talk with "Function with Complex Logic"
+
+create function called calculateDiscount using number price, boolean isVIP {
+	create number called discount
+	set discount to 0
+
+	if price equals 0 {
+		return 0
+	}
+
+	if isVIP {
+		set discount to price * 0.2
+	} else {
+		if price equals 100 {
+			set discount to 10
+		} else if price equals 50 {
+			set discount to 5
+		} else {
+			set discount to price * 0.05
+		}
+	}
+
+	return discount
+}
+
+call talk with "calculateDiscount(100, false) - Expected: 10, Result: " + (call toString with (call calculateDiscount with 100, false))
+call talk with "calculateDiscount(50, false) - Expected: 5, Result: " + (call toString with (call calculateDiscount with 50, false))
+call talk with "calculateDiscount(80, false) - Expected: 4, Result: " + (call toString with (call calculateDiscount with 80, false))
+call talk with "calculateDiscount(100, true) - Expected: 20, Result: " + (call toString with (call calculateDiscount with 100, true))
+
+#>--------------------------------<#
+#>- Function with Variable Scope -<#
+#>--------------------------------<#
+
+call talk with "Function with Variable Scope"
+
+create number called globalVar
+set globalVar to 10
+
+create function called testScope {
+	create number called localVar
+	set localVar to 20
+	set globalVar to 30
+	return localVar
+}
+
+call talk with "Before function call - globalVar: " + (call toString with globalVar)
+call talk with "testScope() - Expected: 20, Result: " + (call toString with (call testScope))
+call talk with "After function call - globalVar: " + (call toString with globalVar)
+
+#>----------------------------------<#
+#>- Function Using Other Functions -<#
+#>----------------------------------<#
+
+call talk with "Function Using Other Functions"
+
+create function called square using number x {
+	return x * x
+}
+
+create function called cube using number x {
+	return x * (call square with x)
+}
+
+create function called computeArea using number length, number width {
+	return (call multiply with length, width)
+}
+
+call talk with "square(4) - Expected: 16, Result: " + (call toString with (call square with 4))
+call talk with "cube(3) - Expected: 27, Result: " + (call toString with (call cube with 3))
+call talk with "computeArea(5, 6) - Expected: 30, Result: " + (call toString with (call computeArea with 5, 6))
+
+#>-------------------------------<#
+#>- Function with Boolean Logic -<#
+#>-------------------------------<#
+
+call talk with "Function with Boolean Logic"
+
+create function called xor using boolean a, boolean b {
+	return (a or b) and not (a and b)
+}
+
+create function called evalComplex using boolean a, boolean b, boolean c {
+	return (a and b) or (not c)
+}
+
+call talk with "xor(true, false) - Expected: true, Result: " + (call toString with (call xor with true, false))
+call talk with "xor(true, true) - Expected: false, Result: " + (call toString with (call xor with true, true))
+call talk with "xor(false, false) - Expected: false, Result: " + (call toString with (call xor with false, false))
+call talk with "evalComplex(true, true, false) - Expected: true, Result: " + (call toString with (call evalComplex with true, true, false))
+call talk with "evalComplex(false, true, true) - Expected: false, Result: " + (call toString with (call evalComplex with false, true, true))
+
+#>----------------------------------------------------<#
+#>- Functions as First-Class Citizens (if supported) -<#
+#>----------------------------------------------------<#
+
+call talk with "Functions as First-Class Citizens Test"
+
+create function called applyOperation using number a, number b {
+	create number called result
+
+	# Direct calling another function
+	set result to (call add with a, b)
+
+	call talk with "Add result: " + (call toString with result)
+
+	# Call another function with the result
+	set result to (call multiply with result, 2)
+
+	call talk with "After multiplication: " + (call toString with result)
+
+	return result
+}
+
+call talk with "applyOperation(10, 5) - Expected final result: 30, Result: " + (call toString with (call applyOperation with 10, 5))
+
+#>-------------------------------------------------------------------<#
+#>- Function Error Handling Tests (assuming try-catch is supported) -<#
+#>-------------------------------------------------------------------<#
+
+call talk with "Function Error Handling"
+
+create function called divideNumbers using number a, number b {
+	if b equals 0 {
+		call talk with "Error: Cannot divide by zero"
+		return 0
+	}
+
+	return a / b
+}
+
+call talk with "divideNumbers(10, 2) - Expected: 5, Result: " + (call toString with (call divideNumbers with 10, 2))
+call talk with "divideNumbers(10, 0) - Expected: Error message and 0, Result: " + (call toString with (call divideNumbers with 10, 0))
+
+#>-----------------------------------<#
+#>- Function with Default Behaviors -<#
+#>-----------------------------------<#
+
+call talk with "Function with Default Behaviors"
+
+create function called greetWithDefault using string name {
+	if name equals "" {
+		return "Hello, Guest!"
+	}
+	return "Hello, " + name + "!"
+}
+
+call talk with "greetWithDefault('John') - Expected: Hello, John!, Result: " + (call greetWithDefault with "John")
+call talk with "greetWithDefault('') - Expected: Hello, Guest!, Result: " + (call greetWithDefault with "")

@@ -24,6 +24,7 @@ import me.xswezan.Parser.Node;
 import me.xswezan.Parser.NumericLiteral;
 import me.xswezan.Parser.BinaryOperatorType;
 import me.xswezan.Parser.RepeatStatement;
+import me.xswezan.Parser.ReturnStatement;
 import me.xswezan.Parser.ScopeStatement;
 import me.xswezan.Parser.Statement;
 import me.xswezan.Parser.StringLiteral;
@@ -36,6 +37,9 @@ import me.xswezan.Parser.WhileStatement;
 public class Interpreter {
     public static void EvaluateBody(Body program, Environment environment) {
         for (Node node : program.nodes) {
+            if (node == null) continue;
+            if (environment.HasReturned()) break;
+
             if (node instanceof Statement statement) {
                 EvaluateStatement(statement, environment);
             } else if (node instanceof Expression expression) {
@@ -55,6 +59,7 @@ public class Interpreter {
         else if (statement instanceof RepeatStatement stmt) { EvaluateRepeatStatement(stmt, environment); }
         else if (statement instanceof WhileStatement stmt) { EvaluateWhileStatement(stmt, environment); }
         else if (statement instanceof IfStatement stmt) { EvaluateIfStatement(stmt, environment); }
+        else if (statement instanceof ReturnStatement stmt) { EvaluateReturnStatement(stmt, environment); }
         else if (statement instanceof ScopeStatement stmt) { EvaluateScopeStatement(stmt, environment); }
         else { throw new RuntimeException("Statement " + statement + " isn't implemented for evaluation!"); }
     }
@@ -116,6 +121,8 @@ public class Interpreter {
             if (!environment.HasVariable(name.symbol)) throw new RuntimeException("No variable named '" + name.symbol +"' found in scope!");
 
             Environment container = environment.GetVariableContainer(name.symbol);
+            if (container == null) throw new RuntimeException("Couldn't find variable with name '" + name.symbol + "'!");
+
             container.SetVariable(name.symbol, value);
         } else if (statement.name instanceof MemberExpression expression) {
             RuntimeValue object = EvaluateExpression(expression.object, environment);
@@ -159,12 +166,20 @@ public class Interpreter {
 
     public static void EvaluateIfStatement(IfStatement statement, Environment environment) {
         RuntimeValue condition = EvaluateExpression(statement.condition, environment);
-        assert condition instanceof RuntimeBoolean : "Expected while condition expression to be a boolean!";
+        if (condition instanceof RuntimeBoolean bool) {
+            if (bool.value == false) return;
 
-        Environment scope = new Environment();
-        scope.parent = environment;
+            Environment scope = new Environment();
+            scope.parent = environment;
 
-        EvaluateBody(statement.body, scope);
+            EvaluateBody(statement.body, scope);
+        } else {
+            throw new RuntimeException("Expected while condition expression to be a boolean!");
+        }
+    }
+
+    public static void EvaluateReturnStatement(ReturnStatement statement, Environment environment) {
+        environment.SetReturnValue(EvaluateExpression(statement.content, environment));
     }
 
     public static void EvaluateScopeStatement(ScopeStatement statement, Environment environment) {
@@ -315,13 +330,13 @@ public class Interpreter {
         RuntimeValue function = null;
         if (expression.functionName instanceof IdentifierExpression name) {
             Environment container = environment.GetVariableContainer(name.symbol);
+            if (container == null) throw new RuntimeException("Couldn't find function with name '" + name.symbol + "'!");
+
             function = container.GetVariable(name.symbol);
         } else if (expression.functionName instanceof MemberExpression memberExpression) {
             RuntimeValue object = EvaluateExpression(memberExpression.object, environment);
             if (object instanceof RuntimeBundle bundle && memberExpression.member instanceof IdentifierExpression member) {
                 function = bundle.environment.GetVariable(member.symbol);
-                for (String k : bundle.environment.variables.keySet()) {
-                }
             }
         }
 
@@ -333,6 +348,7 @@ public class Interpreter {
             return nativeFunction.call(args);
         } else if (function instanceof RuntimeFunction func) {
             Environment scope = new Environment();
+            scope.returnable = true;
             scope.parent = environment;
 
             for (int i = 0; i < arguments.size(); ++i) {
@@ -343,10 +359,9 @@ public class Interpreter {
             }
 
             EvaluateBody(func.body, scope);
+            return scope.GetReturnValue();
         } else {
             throw new RuntimeException("Can't call a non-function variable!");
         }
-
-        return null;
     }
 }

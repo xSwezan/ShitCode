@@ -1,6 +1,5 @@
 package me.xswezan;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -85,6 +84,8 @@ public class Environment {
     \*-------------*/
 
     Environment parent = null;
+    boolean returnable = false;
+    RuntimeValue returnValue = null;
     HashMap<String, RuntimeValue> variables = new HashMap<String, RuntimeValue>();
 
     public RuntimeValue GetVariable(String name) {
@@ -105,5 +106,29 @@ public class Environment {
 
     public boolean HasVariable(String name) {
         return GetVariableContainer(name) != null;
+    }
+
+    public Environment GetReturnableContainer() {
+        if (returnable) return this;
+        if (parent == null) return null;
+        return parent.GetReturnableContainer();
+    }
+
+    public boolean HasReturned() {
+        Environment container = GetReturnableContainer();
+        if (container == null) return false;
+        return container.GetReturnValue() != null;
+    }
+
+    public void SetReturnValue(RuntimeValue value) {
+        Environment container = GetReturnableContainer();
+        if (container == null) throw new RuntimeException("Can't return a value in this environment!");
+        container.returnValue = value;
+    }
+
+    public RuntimeValue GetReturnValue() {
+        Environment container = GetReturnableContainer();
+        if (container == null) throw new RuntimeException("This environment can't have a return value!");
+        return container.returnValue;
     }
 }

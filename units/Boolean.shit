@@ -1,55 +1,187 @@
-call talk with "Test Case 1: Simple equality tests"
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5)
-call talk with "Expected: false, Result: " + (call toString with 5 equals 6)
-call talk with "Expected: true, Result: " + (call toString with "hello" equals "hello")
-call talk with "Expected: false, Result: " + (call toString with "hello" equals "world")
+# AI Generated Unit Tests for Boolean Logic Operations
+# Testing not, and, or, equals operators
 
-call talk with "Test Case 2: AND binary expression"
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and 6 equals 6)
-call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and 6 equals 7)
-call talk with "Expected: false, Result: " + (call toString with 5 equals 6 and 6 equals 6)
-call talk with "Expected: false, Result: " + (call toString with 5 equals 6 and 6 equals 7)
+#>----------------------------<#
+#>- Basic Boolean Operations -<#
+#>----------------------------<#
 
-call talk with "Test Case 3: OR binary expression"
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5 or 6 equals 6)
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5 or 6 equals 7)
-call talk with "Expected: true, Result: " + (call toString with 5 equals 6 or 6 equals 6)
-call talk with "Expected: false, Result: " + (call toString with 5 equals 6 or 6 equals 7)
+call talk with "Basic Boolean Operations"
 
-call talk with "Test Case 4: Complex combinations"
-call talk with "Expected: true, Result: " + (call toString with (5 equals 5 and 6 equals 6) or (7 equals 8))
-call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and (6 equals 7 or 7 equals 8))
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and (6 equals 6 or 7 equals 8))
+# Testing the 'not' operation
+call talk with "not true - Expected: false, Result: " + (call toString with not true)
+call talk with "not false - Expected: true, Result: " + (call toString with not false)
 
-call talk with "Test Case 5: Testing with variables"
-create number called x
-create number called y
-set x to 10
-set y to 10
+# Testing the 'and' operation
+call talk with "true and true - Expected: true, Result: " + (call toString with true and true)
+call talk with "true and false - Expected: false, Result: " + (call toString with true and false)
+call talk with "false and true - Expected: false, Result: " + (call toString with false and true)
+call talk with "false and false - Expected: false, Result: " + (call toString with false and false)
 
-call talk with "Expected: true, Result: " + (call toString with x equals y)
-set y to 15
-call talk with "Expected: false, Result: " + (call toString with x equals y)
-call talk with "Expected: true, Result: " + (call toString with x equals 10 and y equals 15)
-call talk with "Expected: true, Result: " + (call toString with x equals 10 or y equals 10)
+# Testing the 'or' operation
+call talk with "true or true - Expected: true, Result: " + (call toString with true or true)
+call talk with "true or false - Expected: true, Result: " + (call toString with true or false)
+call talk with "false or true - Expected: true, Result: " + (call toString with false or true)
+call talk with "false or false - Expected: false, Result: " + (call toString with false or false)
 
-call talk with "Test Case 6: Iterative testing"
-create number called i
-set i to 0
+# Testing the 'equals' operation with booleans
+call talk with "true equals true - Expected: true, Result: " + (call toString with true equals true)
+call talk with "false equals false - Expected: true, Result: " + (call toString with false equals false)
+call talk with "true equals false - Expected: false, Result: " + (call toString with true equals false)
+call talk with "false equals true - Expected: false, Result: " + (call toString with false equals true)
 
-repeat 10 times {
-    set i to i + 1
-    call talk with (call toString with i) + ": equals 5 is " + (call toString with i equals 5)
+#>-------------------------------<#
+#>- Combined Boolean Operations -<#
+#>-------------------------------<#
+
+call talk with "Combined Boolean Operations"
+
+# Testing combinations of operations
+call talk with "true and true and true - Expected: true, Result: " + (call toString with true and true and true)
+call talk with "true and false and true - Expected: false, Result: " + (call toString with true and false and true)
+call talk with "true or false or false - Expected: true, Result: " + (call toString with true or false or false)
+call talk with "false or false or false - Expected: false, Result: " + (call toString with false or false or false)
+
+# Testing not with and/or
+call talk with "not (true and false) - Expected: true, Result: " + (call toString with not (true and false))
+call talk with "not (true or false) - Expected: false, Result: " + (call toString with not (true or false))
+call talk with "(not true) and false - Expected: false, Result: " + (call toString with (not true) and false)
+call talk with "(not false) or true - Expected: true, Result: " + (call toString with (not false) or true)
+
+#>-------------------------------<#
+#>- Complex Boolean Expressions -<#
+#>-------------------------------<#
+
+call talk with "Complex Boolean Expressions"
+
+# Testing operator precedence and parentheses
+call talk with "(true or false) and false - Expected: false, Result: " + (call toString with (true or false) and false)
+call talk with "true or (false and false) - Expected: true, Result: " + (call toString with true or (false and false))
+call talk with "not (true and true) or false - Expected: false, Result: " + (call toString with not (true and true) or false)
+call talk with "not ((true or false) and false) - Expected: true, Result: " + (call toString with not ((true or false) and false))
+
+#>--------------------------------<#
+#>- Boolean Logic with Variables -<#
+#>--------------------------------<#
+
+call talk with "Boolean Logic with Variables"
+
+create boolean called a
+create boolean called b
+create boolean called c
+
+set a to true
+set b to false
+set c to true
+
+call talk with "a and b - Expected: false, Result: " + (call toString with a and b)
+call talk with "a or b - Expected: true, Result: " + (call toString with a or b)
+call talk with "not a - Expected: false, Result: " + (call toString with not a)
+call talk with "a equals c - Expected: true, Result: " + (call toString with a equals c)
+call talk with "a and c - Expected: true, Result: " + (call toString with a and c)
+call talk with "(a or b) and not c - Expected: false, Result: " + (call toString with (a or b) and not c)
+call talk with "not (a equals b) - Expected: true, Result: " + (call toString with not (a equals b))
+
+#>------------------------------<#
+#>- Boolean Logic in Functions -<#
+#>------------------------------<#
+
+call talk with "Boolean Logic in Functions"
+
+create function called nand using boolean p, boolean q {
+    return not (p and q)
 }
 
-call talk with "Test Case 7: Testing short-circuit evaluation"
-create boolean called testPassed
-set testPassed to true
+create function called nor using boolean p, boolean q {
+    return not (p or q)
+}
 
-call talk with "Testing AND short-circuit (should be false): " + (call toString with 5 equals 6 and someUndefinedVariable equals 10)
+create function called xor using boolean p, boolean q {
+    return (p and not q) or (not p and q)
+}
 
-call talk with "Testing OR short-circuit (should be true): " + (call toString with 5 equals 5 or someUndefinedVariable equals 10)
+create function called implies using boolean p, boolean q {
+    return not p or q
+}
 
-call talk with "Test Case 8: Testing operator precedence"
-call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and 6 equals 7 or 8 equals 9)
-call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and (6 equals 7 or 8 equals 8))
+# Test NAND function (logical NAND: ¬(p ∧ q))
+call talk with "nand(true, true) - Expected: false, Result: " + (call toString with (call nand with true, true))
+call talk with "nand(true, false) - Expected: true, Result: " + (call toString with (call nand with true, false))
+call talk with "nand(false, true) - Expected: true, Result: " + (call toString with (call nand with false, true))
+call talk with "nand(false, false) - Expected: true, Result: " + (call toString with (call nand with false, false))
+
+# Test NOR function (logical NOR: ¬(p ∨ q))
+call talk with "nor(true, true) - Expected: false, Result: " + (call toString with (call nor with true, true))
+call talk with "nor(true, false) - Expected: false, Result: " + (call toString with (call nor with true, false))
+call talk with "nor(false, true) - Expected: false, Result: " + (call toString with (call nor with false, true))
+call talk with "nor(false, false) - Expected: true, Result: " + (call toString with (call nor with false, false))
+
+# Test XOR function (logical XOR: (p ∧ ¬q) ∨ (¬p ∧ q))
+call talk with "xor(true, true) - Expected: false, Result: " + (call toString with (call xor with true, true))
+call talk with "xor(true, false) - Expected: true, Result: " + (call toString with (call xor with true, false))
+call talk with "xor(false, true) - Expected: true, Result: " + (call toString with (call xor with false, true))
+call talk with "xor(false, false) - Expected: false, Result: " + (call toString with (call xor with false, false))
+
+# Test IMPLIES function (logical implication: ¬p ∨ q)
+call talk with "implies(true, true) - Expected: true, Result: " + (call toString with (call implies with true, true))
+call talk with "implies(true, false) - Expected: false, Result: " + (call toString with (call implies with true, false))
+call talk with "implies(false, true) - Expected: true, Result: " + (call toString with (call implies with false, true))
+call talk with "implies(false, false) - Expected: true, Result: " + (call toString with (call implies with false, false))
+
+#>-------------------------------------<#
+#>- Boolean Logic with Equality Tests -<#
+#>-------------------------------------<#
+
+call talk with "Boolean Logic with Equality Tests"
+
+create number called x
+create number called y
+create number called z
+
+set x to 10
+set y to 10
+set z to 20
+
+# Testing equals with other types along with boolean logic
+call talk with "x equals y - Expected: true, Result: " + (call toString with x equals y)
+call talk with "x equals z - Expected: false, Result: " + (call toString with x equals z)
+call talk with "(x equals y) and (y equals z) - Expected: false, Result: " + (call toString with (x equals y) and (y equals z))
+call talk with "(x equals y) or (y equals z) - Expected: true, Result: " + (call toString with (x equals y) or (y equals z))
+call talk with "not (x equals z) - Expected: true, Result: " + (call toString with not (x equals z))
+call talk with "(x equals y) and not (y equals z) - Expected: true, Result: " + (call toString with (x equals y) and not (y equals z))
+
+#>----------------------------<#
+#>- Complex Boolean Function -<#
+#>----------------------------<#
+
+call talk with "Complex Boolean Function"
+
+create function called evaluateLogic using boolean p, boolean q, boolean r {
+    # This implements: (p → q) ∧ (q → r) → (p → r)
+    # Which is a tautology (always true) in classical logic
+
+    # p → q is equivalent to ¬p ∨ q
+    create boolean called implication1
+    set implication1 to (not p) or q
+
+    # q → r is equivalent to ¬q ∨ r
+    create boolean called implication2
+    set implication2 to (not q) or r
+
+    # p → r is equivalent to ¬p ∨ r
+    create boolean called implication3
+    set implication3 to (not p) or r
+
+    # (p → q) ∧ (q → r) → (p → r)
+    # Equivalent to ¬((¬p ∨ q) ∧ (¬q ∨ r)) ∨ (¬p ∨ r)
+    return (not (implication1 and implication2)) or implication3
+}
+
+# Test the evaluateLogic function with all possible combinations
+call talk with "evaluateLogic(true, true, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, true, true))
+call talk with "evaluateLogic(true, true, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, true, false))
+call talk with "evaluateLogic(true, false, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, false, true))
+call talk with "evaluateLogic(true, false, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, false, false))
+call talk with "evaluateLogic(false, true, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, true, true))
+call talk with "evaluateLogic(false, true, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, true, false))
+call talk with "evaluateLogic(false, false, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, false, true))
+call talk with "evaluateLogic(false, false, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, false, false))

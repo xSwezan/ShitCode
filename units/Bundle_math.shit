@@ -1,0 +1,54 @@
+create bundle called math
+
+#>-------------<#
+#>- Constants -<#
+#>-------------<#
+
+create number called pi in math
+set math->pi to 3.14159265
+
+create number called tau in math
+set math->tau to math->pi * 2
+
+create number called phi in math
+set math->phi to 1.61803398
+
+#>-------------<#
+#>- Fibonacci -<#
+#>-------------<#
+
+create function called fibonacci in math using number num {
+    create string called sequence
+
+    create number called a
+    create number called b
+    create number called c
+
+    set a to 1
+
+    create number called index
+    repeat num times {
+        set index to index + 1
+
+        set c to a + b
+        set a to b
+        set b to c
+
+        set sequence to sequence + c
+
+        if not index equals num {
+            set sequence to sequence + ", "
+        }
+    }
+
+    return sequence
+}
+
+#>---------<#
+#>- Tests -<#
+#>---------<#
+
+call talk with "PI: " + math->pi
+call talk with "TAU: " + math->tau
+
+call talk with "Fibonacci (5): " + (call math->fibonacci with 5)

@@ -1,9 +1,270 @@
+# AI Generated Unit Tests for Bundles
+
+#>---------------------------------------------<#
+#>- Basic Bundle Creation and Property Access -<#
+#>---------------------------------------------<#
+
+call talk with "Basic Bundle Creation and Property Access"
+create bundle called testBundle1
+create number called value in testBundle1
+set testBundle1->value to 42
+
+call talk with "Expected: 42, Result: " + (call toString with testBundle1->value)
+set testBundle1->value to 100
+call talk with "Expected: 100, Result: " + (call toString with testBundle1->value)
+call talk with "Equality check - Expected: true, Result: " + (call toString with testBundle1->value equals 100)
+
+#>-----------------------------------<#
+#>- Multiple Properties in a Bundle -<#
+#>-----------------------------------<#
+
+call talk with "Multiple Properties in a Bundle"
+create bundle called person
+create string called name in person
+create number called age in person
+create boolean called isActive in person
+
+set person->name to "John Doe"
+set person->age to 30
+set person->isActive to true
+
+call talk with "Expected: John Doe, Result: " + person->name
+call talk with "Expected: 30, Result: " + (call toString with person->age)
+call talk with "Expected: true, Result: " + (call toString with person->isActive)
+call talk with "Name check - Expected: true, Result: " + (call toString with person->name equals "John Doe")
+
+#>--------------------------------------------<#
+#>- Bundle Methods and Property Manipulation -<#
+#>--------------------------------------------<#
+
+call talk with "Bundle Methods and Property Manipulation"
+create bundle called counter
+create number called count in counter
+set counter->count to 0
+
+create function called increment in counter {
+	set counter->count to counter->count + 1
+}
+
+create function called incrementBy in counter using number amount {
+	set counter->count to counter->count + amount
+}
+
+create function called getCount in counter {
+	return counter->count
+}
+
+call talk with "Initial count - Expected: 0, Result: " + (call toString with counter->count)
+call counter->increment
+call talk with "After increment - Expected: 1, Result: " + (call toString with counter->count)
+call counter->incrementBy with 5
+call talk with "After incrementBy 5 - Expected: 6, Result: " + (call toString with counter->count)
+call talk with "Using getCount method - Expected: 6, Result: " + (call toString with (call counter->getCount))
+call talk with "Count equals 6 - Expected: true, Result: " + (call toString with counter->count equals 6)
+
+#>---------------------------------<#
+#>- Bundle with Nested Operations -<#
+#>---------------------------------<#
+
+call talk with "Bundle with Nested Operations"
+create bundle called calculator
+create number called result in calculator
+set calculator->result to 0
+
+create function called add in calculator using number a, number b {
+	set calculator->result to a + b
+}
+
+create function called multiply in calculator using number a, number b {
+	set calculator->result to a * b
+}
+
+create function called compute in calculator using number x, number y, boolean useMultiplication {
+	if useMultiplication {
+		call calculator->multiply with x, y
+	} else {
+		call calculator->add with x, y
+	}
+}
+
+call calculator->add with 5, 3
+call talk with "After add(5,3) - Expected: 8, Result: " + (call toString with calculator->result)
+
+call calculator->multiply with 4, 3
+call talk with "After multiply(4,3) - Expected: 12, Result: " + (call toString with calculator->result)
+
+call calculator->compute with 5, 5, true
+call talk with "After compute(5,5,true) - Expected: 25, Result: " + (call toString with calculator->result)
+
+call calculator->compute with 5, 5, false
+call talk with "After compute(5,5,false) - Expected: 10, Result: " + (call toString with calculator->result)
+
+#>---------------------------------------------<#
+#>- Testing Player Bundle (from your example) -<#
+#>---------------------------------------------<#
+
+call talk with "Testing Player Bundle"
 create bundle called player
+
 create number called health in player
+set player->health to 100
 
-create bundle called stats in player
+create function called takeDamage in player using number damage {
+	set player->health to player->health - damage
+}
 
-create number called health in player->stats
-set player->stats->health to 100
+create function called heal in player using number amount {
+	set player->health to player->health + amount
+}
 
-call talk with player->stats->health
+call talk with "Initial health - Expected: 100, Result: " + (call toString with player->health)
+call player->takeDamage with 10
+call talk with "After takeDamage(10) - Expected: 90, Result: " + (call toString with player->health)
+call player->heal with 5
+call talk with "After heal(5) - Expected: 95, Result: " + (call toString with player->health)
+
+#>-------------------------------<#
+#>- Bundle Method Return Values -<#
+#>-------------------------------<#
+
+call talk with "Bundle Method Return Values"
+create bundle called math
+
+create function called square in math using number x {
+	return x * x
+}
+
+create function called isEqual in math using number a, number b {
+	return a equals b
+}
+
+create function called max in math using number a, number b {
+	# Without > operator, we can determine max using conditional and equals
+	if a equals b {
+		return a  # They're equal, return either one
+	}
+
+	# Create a test value that's greater than a
+	create number called testValue
+	set testValue to a + 1
+
+	# If b equals testValue or higher, b must be greater than a
+	if b equals testValue {
+		return b
+	}
+
+	# If b is higher, the difference between b and a will be positive
+	create number called diff
+	set diff to b - a
+
+	if diff equals 0 {
+		return a  # They're equal
+	}
+
+	# Test if diff is negative by adding it to a positive number and checking if result is smaller
+	create number called positiveTest
+	set positiveTest to 100
+	create number called testResult
+	set testResult to positiveTest + diff
+
+	if testResult equals positiveTest {
+		return a  # diff was 0, so numbers were equal
+	} else if testResult equals positiveTest + diff {
+		# If diff is positive, b is greater
+		if testResult equals 100 + diff {
+			return b
+		} else {
+			return a
+		}
+	} else {
+		return a
+	}
+}
+
+call talk with "square(5) - Expected: 25, Result: " + (call toString with (call math->square with 5))
+call talk with "isEqual(10,10) - Expected: true, Result: " + (call toString with (call math->isEqual with 10, 10))
+call talk with "isEqual(10,7) - Expected: false, Result: " + (call toString with (call math->isEqual with 10, 7))
+call talk with "max(10,7) - Expected: 10, Result: " + (call toString with (call math->max with 10, 7))
+call talk with "max(3,8) - Expected: 8, Result: " + (call toString with (call math->max with 3, 8))
+call talk with "max(5,5) - Expected: 5, Result: " + (call toString with (call math->max with 5, 5))
+
+#>--------------------------------<#
+#>- Multiple Bundles Interaction -<#
+#>--------------------------------<#
+
+call talk with "Multiple Bundles Interaction"
+create bundle called enemy
+create number called health in enemy
+set enemy->health to 50
+
+create bundle called game
+create function called battle in game using number damageToPlayer, number damageToEnemy {
+	call player->takeDamage with damageToPlayer
+	set enemy->health to enemy->health - damageToEnemy
+
+	return "Player: " + (call toString with player->health) + ", Enemy: " + (call toString with enemy->health)
+}
+
+call talk with "Before battle - Player: " + (call toString with player->health) + ", Enemy: " + (call toString with enemy->health)
+call talk with "Battle result: " + (call game->battle with 15, 20)
+call talk with "After battle - Player: " + (call toString with player->health) + ", Enemy: " + (call toString with enemy->health)
+
+#>--------------------------------------------<#
+#>- Complex Boolean Expressions with Bundles -<#
+#>--------------------------------------------<#
+
+call talk with "Complex Boolean Expressions with Bundles"
+create bundle called booleanTests
+create boolean called a in booleanTests
+create boolean called b in booleanTests
+create boolean called c in booleanTests
+
+set booleanTests->a to true
+set booleanTests->b to false
+set booleanTests->c to true
+
+create function called testAnd in booleanTests {
+	return booleanTests->a and booleanTests->b
+}
+
+create function called testOr in booleanTests {
+	return booleanTests->a or booleanTests->b
+}
+
+create function called testComplex in booleanTests {
+	return (booleanTests->a and booleanTests->c) or booleanTests->b
+}
+
+call talk with "a and b - Expected: false, Result: " + (call toString with (call booleanTests->testAnd))
+call talk with "a or b - Expected: true, Result: " + (call toString with (call booleanTests->testOr))
+call talk with "(a and c) or b - Expected: true, Result: " + (call toString with (call booleanTests->testComplex))
+
+#>-----------------------------------------------<#
+#>- Boolean property interaction across bundles -<#
+#>-----------------------------------------------<#
+
+call talk with "Boolean property interaction across bundles"
+create bundle called bundle1
+create bundle called bundle2
+
+create boolean called flag in bundle1
+set bundle1->flag to true
+
+create boolean called flag in bundle2
+set bundle2->flag to false
+
+create function called combinedCheck in bundle1 {
+	if bundle1->flag and bundle2->flag {
+		return "Both flags are true"
+	} else if bundle1->flag or bundle2->flag {
+		return "At least one flag is true"
+	} else {
+		return "Both flags are false"
+	}
+}
+
+call talk with "Combined check - Expected: At least one flag is true, Result: " + (call bundle1->combinedCheck)
+set bundle2->flag to true
+call talk with "After setting bundle2->flag to true - Expected: Both flags are true, Result: " + (call bundle1->combinedCheck)
+set bundle1->flag to false
+call talk with "After setting bundle1->flag to false - Expected: At least one flag is true, Result: " + (call bundle1->combinedCheck)

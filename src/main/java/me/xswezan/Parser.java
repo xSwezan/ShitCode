@@ -56,6 +56,12 @@ public class Parser {
         Body body;
     }
 
+    static class ReturnStatement extends Statement {
+        Expression content;
+
+        public String toString() { return "RETSTMT(" + content + ")"; }
+    }
+
     static class ScopeStatement extends Statement {
         Body body;
     }
@@ -125,12 +131,6 @@ public class Parser {
         Vector<Expression> arguments = new Vector<Expression>();
     }
 
-    static class ReturnExpression extends Expression {
-        Expression content;
-
-        public String toString() { return "RETEXPR(" + content + ")"; }
-    }
-
     static class MemberExpression extends Expression {
         Expression object;
         Expression member;
@@ -194,6 +194,7 @@ public class Parser {
             case TokenType.KEYWORD_REPEAT: return parseRepeatStatement();
             case TokenType.KEYWORD_WHILE: return parseWhileStatement();
             case TokenType.KEYWORD_IF: return parseIfStatement();
+            case TokenType.KEYWORD_RETURN: return parseReturnStatement();
             case TokenType.OPEN_SCOPE: return parseScopeStatement();
             case TokenType.NEW_LINE: eat(); break;
             default: return parseExpression();
@@ -313,6 +314,15 @@ public class Parser {
         return statement;
     }
 
+    private ReturnStatement parseReturnStatement() {
+        eat(); // Eat return keyword
+
+        ReturnStatement statement = new ReturnStatement();
+        statement.content = parseExpression();
+
+        return statement;
+    }
+
     private ScopeStatement parseScopeStatement() {
         ScopeStatement statement = new ScopeStatement();
         statement.body = parseBody();
@@ -368,20 +378,6 @@ public class Parser {
             return expression;
         }
 
-
-        return parseUnaryExpression();
-    }
-
-    private Expression parseUnaryExpression() {
-        if (atIs(TokenType.KEYWORD_NOT)) {
-            eat(); // Eat operator
-
-            UnaryExpression expression = new UnaryExpression();
-            expression.expression = parseExpression();
-            expression.operator = UnaryOperatorType.NOT;
-
-            return expression;
-        }
 
         return parseAndOrExpression();
     }
@@ -475,12 +471,12 @@ public class Parser {
 
     // bundle->member
     private Expression parseMemberExpression() {
-        Expression expression = parsePrimaryExpression();
+        Expression expression = parseUnaryExpression();
 
         while (atIs(TokenType.MEMBER_ACCESS_OPERATOR)) {
             eat();
 
-            Expression member = parsePrimaryExpression();
+            Expression member = parseUnaryExpression();
 
             MemberExpression memberExpression = new MemberExpression();
             memberExpression.object = expression;
@@ -491,21 +487,26 @@ public class Parser {
         return expression;
     }
 
+    private Expression parseUnaryExpression() {
+        if (atIs(TokenType.KEYWORD_NOT)) {
+            eat(); // Eat operator
+
+            UnaryExpression expression = new UnaryExpression();
+            expression.expression = parseUnaryExpression();
+            expression.operator = UnaryOperatorType.NOT;
+
+            return expression;
+        }
+
+        return parsePrimaryExpression();
+    }
+
     private Expression parsePrimaryExpression() {
         switch (at().type) {
             case TokenType.IDENTIFIER: {
                 IdentifierExpression identifier = new IdentifierExpression();
                 identifier.symbol = eat().raw;
                 return identifier;
-            }
-
-            case TokenType.KEYWORD_RETURN: {
-                eat(); // Eat return
-                ReturnExpression expression = new ReturnExpression();
-                if (!atIs(TokenType.CLOSE_SCOPE)) {
-                    expression.content = parseExpression();
-                }
-                return expression;
             }
 
             case TokenType.NUMBER: {
