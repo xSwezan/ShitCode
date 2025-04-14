@@ -21,6 +21,7 @@ public class Parser {
     static class VariableDeclarationStatement extends Statement {
         String type;
         String name;
+        Expression inBundle;
     }
 
     static class FunctionDeclarationParameter {
@@ -36,7 +37,7 @@ public class Parser {
     }
 
     static class VariableAssignmentStatement extends Statement {
-        String name;
+        Expression name;
         Expression value;
     }
 
@@ -130,6 +131,13 @@ public class Parser {
         public String toString() { return "RETEXPR(" + content + ")"; }
     }
 
+    static class MemberExpression extends Expression {
+        Expression object;
+        Expression member;
+
+        public String toString() { return "MEMEXPR(" + object + ", " + member + ")"; }
+    }
+
     /*--------*\
     |  Parser  |
     \*--------*/
@@ -203,6 +211,12 @@ public class Parser {
 
         Token name = expect(TokenType.IDENTIFIER, "Expected variable name identifier following 'called' keyword in variable declaration!");
 
+        Expression inBundle = null;
+        if (atIs(TokenType.KEYWORD_IN)) {
+            eat();
+            inBundle = parseMemberExpression();
+        }
+
         if (variableType.raw.equals("function")) {
             FunctionDeclarationStatement statement = new FunctionDeclarationStatement();
             statement.name = name.raw;
@@ -242,6 +256,7 @@ public class Parser {
         VariableDeclarationStatement statement = new VariableDeclarationStatement();
         statement.name = name.raw;
         statement.type = variableType.raw;
+        statement.inBundle = inBundle;
 
         return statement;
     }
@@ -249,13 +264,14 @@ public class Parser {
     private VariableAssignmentStatement parseVariableAssignment() {
         eat(); // Eat set keyword
 
-        Token variableName = expect(TokenType.IDENTIFIER, "Expected variable name identifier following 'set' keyword!");
+        // Token variableName = expect(TokenType.IDENTIFIER, "Expected variable name identifier following 'set' keyword!");
+        Expression variableName = parseMemberExpression();
         expect(TokenType.KEYWORD_TO, "Expected 'to' keyword following variable name identifier in variable assignment!");
 
         Expression value = parseExpression();
 
         VariableAssignmentStatement statement = new VariableAssignmentStatement();
-        statement.name = variableName.raw;
+        statement.name = variableName;
         statement.value = value;
 
         return statement;
@@ -367,25 +383,6 @@ public class Parser {
         return parseAndOrExpression();
     }
 
-    // left [equals/and/or] right
-    private Expression parseBooleanExpression() {
-        Expression left = parseAdditiveExpression();
-
-        while (atIs(TokenType.KEYWORD_OPERATOR_EQUALS)) {
-            eat(); // Eat operator
-
-            Expression right = parseAdditiveExpression();
-
-            BinaryExpression expression = new BinaryExpression();
-            expression.operator = BinaryOperatorType.BOOLEAN_EQUALS;
-            expression.left = left;
-            expression.right = right;
-            left = expression;
-        }
-
-        return left;
-    }
-
     // left [and/or] right
     private Expression parseAndOrExpression() {
         Expression left = parseBooleanExpression();
@@ -405,6 +402,25 @@ public class Parser {
                 default: break;
             }
 
+            left = expression;
+        }
+
+        return left;
+    }
+
+    // left [equals/and/or] right
+    private Expression parseBooleanExpression() {
+        Expression left = parseAdditiveExpression();
+
+        while (atIs(TokenType.KEYWORD_OPERATOR_EQUALS)) {
+            eat(); // Eat operator
+
+            Expression right = parseAdditiveExpression();
+
+            BinaryExpression expression = new BinaryExpression();
+            expression.operator = BinaryOperatorType.BOOLEAN_EQUALS;
+            expression.left = left;
+            expression.right = right;
             left = expression;
         }
 
@@ -434,7 +450,7 @@ public class Parser {
 
     // left [*, /, %] right
     private Expression parseMultiplicativeExpression() {
-        Expression left = parsePrimaryExpression();
+        Expression left = parseMemberExpression();
 
         while (atIs(TokenType.OPERATOR_MULTIPLY) || atIs(TokenType.OPERATOR_DIVIDE) || atIs(TokenType.OPERATOR_MODULUS)) {
             boolean isMultiply = atIs(TokenType.OPERATOR_MULTIPLY);
@@ -442,7 +458,7 @@ public class Parser {
 
             eat(); // Eat operator
 
-            Expression right = parsePrimaryExpression();
+            Expression right = parseMemberExpression();
 
             BinaryExpression expression = new BinaryExpression();
             expression.left = left;
@@ -452,6 +468,24 @@ public class Parser {
         }
 
         return left;
+    }
+
+    // bundle->member
+    private Expression parseMemberExpression() {
+        Expression expression = parsePrimaryExpression();
+
+        while (atIs(TokenType.MEMBER_ACCESS_OPERATOR)) {
+            eat();
+
+            Expression member = parsePrimaryExpression();
+
+            MemberExpression memberExpression = new MemberExpression();
+            memberExpression.object = expression;
+            memberExpression.member = member;
+            expression = memberExpression;
+        }
+
+        return expression;
     }
 
     private Expression parsePrimaryExpression() {

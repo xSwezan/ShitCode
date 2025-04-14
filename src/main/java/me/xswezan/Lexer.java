@@ -51,6 +51,10 @@ public class Lexer {
         OPERATOR_MULTIPLY,
         OPERATOR_MODULUS,
 
+        // Bundles
+        KEYWORD_IN,
+        MEMBER_ACCESS_OPERATOR,
+
         KEYWORD_TRUE,
         KEYWORD_FALSE,
 
@@ -102,6 +106,15 @@ public class Lexer {
                 token.type = TokenType.OPERATOR_ADD;
                 tokens.add(token);
             } else if (c == '-') {
+                if (code.charAt(i + 1) == '>') {
+                    Token token = new Token();
+                    token.raw = "->";
+                    token.type = TokenType.MEMBER_ACCESS_OPERATOR;
+                    tokens.add(token);
+                    ++i;
+                    continue;
+                }
+
                 Token token = new Token();
                 token.raw = s;
                 token.type = TokenType.OPERATOR_SUBTRACT;
@@ -239,6 +252,8 @@ public class Lexer {
             case "and": token.type = TokenType.KEYWORD_AND; break;
             case "or": token.type = TokenType.KEYWORD_OR; break;
             case "equals": token.type = TokenType.KEYWORD_OPERATOR_EQUALS; break;
+
+            case "in": token.type = TokenType.KEYWORD_IN; break;
 
             case "true": token.type = TokenType.KEYWORD_TRUE; break;
             case "false": token.type = TokenType.KEYWORD_FALSE; break;

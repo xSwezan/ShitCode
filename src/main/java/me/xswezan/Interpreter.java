@@ -1,10 +1,9 @@
 package me.xswezan;
 
 import java.util.ArrayList;
-import java.util.Vector;
-import java.util.function.BinaryOperator;
 
 import me.xswezan.Environment.RuntimeBoolean;
+import me.xswezan.Environment.RuntimeBundle;
 import me.xswezan.Environment.RuntimeFunction;
 import me.xswezan.Environment.RuntimeNativeFunction;
 import me.xswezan.Environment.RuntimeNothing;
@@ -20,6 +19,7 @@ import me.xswezan.Parser.FunctionDeclarationParameter;
 import me.xswezan.Parser.FunctionDeclarationStatement;
 import me.xswezan.Parser.IdentifierExpression;
 import me.xswezan.Parser.IfStatement;
+import me.xswezan.Parser.MemberExpression;
 import me.xswezan.Parser.Node;
 import me.xswezan.Parser.NumericLiteral;
 import me.xswezan.Parser.BinaryOperatorType;
@@ -68,10 +68,20 @@ public class Interpreter {
             case "number": value = new RuntimeNumber(0.0); break;
             case "boolean": value = new RuntimeBoolean(true); break;
             case "function": value = new RuntimeNothing(); break;
+            case "bundle": value = new RuntimeBundle(); break;
             default: throw new RuntimeException("You idiot, you cannot create a variable of type '" + statement.type + "'!");
         }
 
-        environment.SetVariable(statement.name, value);
+        if (statement.inBundle != null) {
+            RuntimeValue bundleValue = EvaluateExpression(statement.inBundle, environment);
+            if (bundleValue instanceof RuntimeBundle bundle) {
+                bundle.environment.SetVariable(statement.name, value);
+            } else {
+                throw new RuntimeException("Expected valid bundle following 'in' keyword in variable declaration statement! Got " + bundleValue + "!");
+            }
+        } else {
+            environment.SetVariable(statement.name, value);
+        }
     }
 
     public static void EvaluateFunctionDeclarationStatement(FunctionDeclarationStatement statement, Environment environment) {
@@ -85,20 +95,27 @@ public class Interpreter {
         }
     }
 
+    //-! MAKE THIS SHIT TYPE CHECKED
+    //-! MAKE THIS SHIT TYPE CHECKED
+    //-! MAKE THIS SHIT TYPE CHECKED
+    //-! MAKE THIS SHIT TYPE CHECKED
+    //-! MAKE THIS SHIT TYPE CHECKED
     public static void EvaluateVariableAssignmentStatement(VariableAssignmentStatement statement, Environment environment) {
-        //-! MAKE THIS SHIT TYPE CHECKED
-        //-! MAKE THIS SHIT TYPE CHECKED
-        //-! MAKE THIS SHIT TYPE CHECKED
-        //-! MAKE THIS SHIT TYPE CHECKED
-        //-! MAKE THIS SHIT TYPE CHECKED
-        if (!environment.HasVariable(statement.name)) {
-            throw new RuntimeException("No variable named '" + statement.name +"' found in scope!");
-        }
-
-        Environment container = environment.GetVariableContainer(statement.name);
-
         RuntimeValue value = EvaluateExpression(statement.value, environment);
-        container.SetVariable(statement.name, value);
+
+        if (statement.name instanceof IdentifierExpression name) {
+            if (!environment.HasVariable(name.symbol)) throw new RuntimeException("No variable named '" + name.symbol +"' found in scope!");
+
+            Environment container = environment.GetVariableContainer(name.symbol);
+            container.SetVariable(name.symbol, value);
+        } else if (statement.name instanceof MemberExpression expression) {
+            RuntimeValue object = EvaluateExpression(expression.object, environment);
+            if (object instanceof RuntimeBundle bundle && expression.member instanceof IdentifierExpression member) {
+                if (!bundle.environment.HasVariable(member.symbol)) throw new RuntimeException("No variable named '" + member.symbol +"' found in bundle!");
+
+                bundle.environment.SetVariable(member.symbol, value);
+            }
+        }
     }
 
     public static void EvaluateRepeatStatement(RepeatStatement statement, Environment environment) {
@@ -157,6 +174,7 @@ public class Interpreter {
         else if (expression instanceof CallExpression call) { return EvaluateCallExpression(call, environment); }
         else if (expression instanceof UnaryExpression unary) { return EvaluateUnaryExpression(unary, environment); }
         else if (expression instanceof BinaryExpression binary) { return EvaluateBinaryExpression(binary, environment); }
+        else if (expression instanceof MemberExpression member) { return EvaluateMemberExpression(member, environment); }
         else if (expression instanceof NumericLiteral literal) { return new RuntimeNumber(literal.value); }
         else if (expression instanceof StringLiteral literal) { return new RuntimeString(literal.value); }
         else if (expression instanceof BooleanLiteral literal) { return new RuntimeBoolean(literal.value); }
@@ -264,6 +282,19 @@ public class Interpreter {
         }
 
         throw new RuntimeException("Couldn't evaluate " + expression.operator + " binary expression on values: " + left + " and " + right + "!");
+    }
+
+    public static RuntimeValue EvaluateMemberExpression(MemberExpression expression, Environment environment) {
+        RuntimeValue object = EvaluateExpression(expression.object, environment);
+        if (object instanceof RuntimeBundle bundle) {
+            if (expression.member instanceof IdentifierExpression member) {
+                return bundle.environment.GetVariable(member.symbol);
+            } else {
+                throw new RuntimeException("Expected member of member expression to be an identifier! Got " + expression.member + "!");
+            }
+        } else {
+            throw new RuntimeException("Expected object of member expression to be a bundle! Got " + expression.object + "!");
+        }
     }
 
     public static RuntimeValue EvaluateCallExpression(CallExpression expression, Environment environment) {

@@ -1,5 +1,6 @@
 package me.xswezan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -41,6 +42,14 @@ public class Environment {
         }
 
         public String toString() { return Boolean.toString(value); }
+    }
+
+    public static class RuntimeBundle extends RuntimeValue {
+        Environment environment = new Environment();
+
+        RuntimeBundle() {}
+
+        public String toString() { return "<bundle>"; }
     }
 
     public static class RuntimeNothing extends RuntimeValue {

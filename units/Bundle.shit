@@ -1,0 +1,9 @@
+create bundle called player
+create number called health in player
+
+create bundle called stats in player
+
+create number called health in player->stats
+set player->stats->health to 100
+
+call talk with player->stats->health
