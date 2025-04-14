@@ -51,6 +51,9 @@ public class Lexer {
         OPERATOR_MULTIPLY,
         OPERATOR_MODULUS,
 
+        KEYWORD_TRUE,
+        KEYWORD_FALSE,
+
         NEW_LINE,
         END_OF_FILE,
     }
@@ -230,6 +233,9 @@ public class Lexer {
             case "and": token.type = TokenType.KEYWORD_AND; break;
             case "or": token.type = TokenType.KEYWORD_OR; break;
             case "equals": token.type = TokenType.KEYWORD_OPERATOR_EQUALS; break;
+
+            case "true": token.type = TokenType.KEYWORD_TRUE; break;
+            case "false": token.type = TokenType.KEYWORD_FALSE; break;
         }
     }
 }

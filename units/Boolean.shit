@@ -1,0 +1,55 @@
+call talk with "Test Case 1: Simple equality tests"
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5)
+call talk with "Expected: false, Result: " + (call toString with 5 equals 6)
+call talk with "Expected: true, Result: " + (call toString with "hello" equals "hello")
+call talk with "Expected: false, Result: " + (call toString with "hello" equals "world")
+
+call talk with "Test Case 2: AND binary expression"
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and 6 equals 6)
+call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and 6 equals 7)
+call talk with "Expected: false, Result: " + (call toString with 5 equals 6 and 6 equals 6)
+call talk with "Expected: false, Result: " + (call toString with 5 equals 6 and 6 equals 7)
+
+call talk with "Test Case 3: OR binary expression"
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5 or 6 equals 6)
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5 or 6 equals 7)
+call talk with "Expected: true, Result: " + (call toString with 5 equals 6 or 6 equals 6)
+call talk with "Expected: false, Result: " + (call toString with 5 equals 6 or 6 equals 7)
+
+call talk with "Test Case 4: Complex combinations"
+call talk with "Expected: true, Result: " + (call toString with (5 equals 5 and 6 equals 6) or (7 equals 8))
+call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and (6 equals 7 or 7 equals 8))
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and (6 equals 6 or 7 equals 8))
+
+call talk with "Test Case 5: Testing with variables"
+create number called x
+create number called y
+set x to 10
+set y to 10
+
+call talk with "Expected: true, Result: " + (call toString with x equals y)
+set y to 15
+call talk with "Expected: false, Result: " + (call toString with x equals y)
+call talk with "Expected: true, Result: " + (call toString with x equals 10 and y equals 15)
+call talk with "Expected: true, Result: " + (call toString with x equals 10 or y equals 10)
+
+call talk with "Test Case 6: Iterative testing"
+create number called i
+set i to 0
+
+repeat 10 times {
+    set i to i + 1
+    call talk with (call toString with i) + ": equals 5 is " + (call toString with i equals 5)
+}
+
+call talk with "Test Case 7: Testing short-circuit evaluation"
+create boolean called testPassed
+set testPassed to true
+
+call talk with "Testing AND short-circuit (should be false): " + (call toString with 5 equals 6 and someUndefinedVariable equals 10)
+
+call talk with "Testing OR short-circuit (should be true): " + (call toString with 5 equals 5 or someUndefinedVariable equals 10)
+
+call talk with "Test Case 8: Testing operator precedence"
+call talk with "Expected: false, Result: " + (call toString with 5 equals 5 and 6 equals 7 or 8 equals 9)
+call talk with "Expected: true, Result: " + (call toString with 5 equals 5 and (6 equals 7 or 8 equals 8))

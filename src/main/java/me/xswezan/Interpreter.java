@@ -13,6 +13,7 @@ import me.xswezan.Environment.RuntimeString;
 import me.xswezan.Environment.RuntimeValue;
 import me.xswezan.Parser.BinaryExpression;
 import me.xswezan.Parser.Body;
+import me.xswezan.Parser.BooleanLiteral;
 import me.xswezan.Parser.CallExpression;
 import me.xswezan.Parser.Expression;
 import me.xswezan.Parser.FunctionDeclarationParameter;
@@ -148,6 +149,7 @@ public class Interpreter {
         else if (expression instanceof BinaryExpression binary) { return EvaluateBinaryExpression(binary, environment); }
         else if (expression instanceof NumericLiteral literal) { return new RuntimeNumber(literal.value); }
         else if (expression instanceof StringLiteral literal) { return new RuntimeString(literal.value); }
+        else if (expression instanceof BooleanLiteral literal) { return new RuntimeBoolean(literal.value); }
 
         throw new RuntimeException("Couldn't evaluate expression: " + expression + "!");
     }
@@ -218,7 +220,11 @@ public class Interpreter {
                     return new RuntimeNumber(leftNumber.value % rightNumber.value);
                 }
             }
-            case BinaryOperatorType.EQUALS: {
+            case BinaryOperatorType.BOOLEAN_EQUALS: {
+                if (left == null || right == null) {
+                    return new RuntimeBoolean(left == right);
+                }
+
                 if (left.getClass() != right.getClass()) {
                     return new RuntimeBoolean(false);
                 }
@@ -231,6 +237,18 @@ public class Interpreter {
                 //> string == string
                 if (left instanceof RuntimeString leftString && right instanceof RuntimeString rightString) {
                     return new RuntimeBoolean(leftString.value.equals(rightString.value));
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_AND: {
+                //> bool && bool
+                if (left instanceof RuntimeBoolean leftBoolean && right instanceof RuntimeBoolean rightBoolean) {
+                    return new RuntimeBoolean(leftBoolean.value && rightBoolean.value);
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_OR: {
+                //> bool || bool
+                if (left instanceof RuntimeBoolean leftBoolean && right instanceof RuntimeBoolean rightBoolean) {
+                    return new RuntimeBoolean(leftBoolean.value || rightBoolean.value);
                 }
             }
         }

@@ -15,12 +15,21 @@ import me.xswezan.Lexer.Token;
 import me.xswezan.Parser.Body;
 
 public class Main {
+    // Send .shit file path as argument OR input with scanner
     public static void main(String[] mainArgs) throws FileNotFoundException, IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        String fileName;
         if (mainArgs.length == 0) {
-            throw new RuntimeException("No argument specified!");
+            System.out.println("No argument given! Please input path to .shit file!");
+            fileName = scanner.nextLine();
+            scanner.close();
+            // throw new RuntimeException("No argument specified!");
+        } else {
+            fileName = mainArgs[0];
         }
-        String fileName = mainArgs[0];
         if (fileName == null) {
+            scanner.close();
             throw new RuntimeException("File path needs to be the first argument!");
         }
 
@@ -39,13 +48,15 @@ public class Main {
         String content = stringBuilder.toString();
 
         //> Run ShitCode
-
         Vector<Token> tokens = Lexer.Lexilize(content);
         Environment global = new Environment();
 
-        Scanner scanner = new Scanner(System.in);
         global.SetVariable("takeInput", new RuntimeNativeFunction(args -> {
             return new RuntimeString(scanner.nextLine());
+        }));
+
+        global.SetVariable("toString", new RuntimeNativeFunction(args -> {
+            return new RuntimeString(args[0].toString());
         }));
 
         global.SetVariable("toNumber", new RuntimeNativeFunction(args -> {
@@ -74,5 +85,6 @@ public class Main {
         Body program = parser.Parse(tokens);
 
         Interpreter.EvaluateBody(program, global);
+        scanner.close();
     }
 }

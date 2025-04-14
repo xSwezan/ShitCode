@@ -69,7 +69,9 @@ public class Parser {
         MULTIPLY,
         DIVIDE,
         MODULUS,
-        EQUALS,
+        BOOLEAN_EQUALS,
+        BOOLEAN_AND,
+        BOOLEAN_OR,
     }
 
     enum UnaryOperatorType {
@@ -103,6 +105,12 @@ public class Parser {
         String value;
 
         public String toString() { return "STRLTRL(\033[32m" + value + "\033[0m)"; }
+    }
+
+    static class BooleanLiteral extends Expression {
+        boolean value;
+
+        public String toString() { return "BOLLTRL(\033[32m" + value + "\033[0m)"; }
     }
 
     static class IdentifierExpression extends Expression {
@@ -356,10 +364,10 @@ public class Parser {
             return expression;
         }
 
-        return parseBooleanExpression();
+        return parseAndOrExpression();
     }
 
-    // left equals right
+    // left [equals/and/or] right
     private Expression parseBooleanExpression() {
         Expression left = parseAdditiveExpression();
 
@@ -369,9 +377,34 @@ public class Parser {
             Expression right = parseAdditiveExpression();
 
             BinaryExpression expression = new BinaryExpression();
+            expression.operator = BinaryOperatorType.BOOLEAN_EQUALS;
             expression.left = left;
             expression.right = right;
-            expression.operator = BinaryOperatorType.EQUALS;
+            left = expression;
+        }
+
+        return left;
+    }
+
+    // left [and/or] right
+    private Expression parseAndOrExpression() {
+        Expression left = parseBooleanExpression();
+
+        while (atIs(TokenType.KEYWORD_AND) || atIs(TokenType.KEYWORD_OR)) {
+            TokenType type = eat().type; // Eat operator
+
+            Expression right = parseBooleanExpression();
+
+            BinaryExpression expression = new BinaryExpression();
+            expression.left = left;
+            expression.right = right;
+
+            switch (type) {
+                case TokenType.KEYWORD_AND: expression.operator = BinaryOperatorType.BOOLEAN_AND; break;
+                case TokenType.KEYWORD_OR: expression.operator = BinaryOperatorType.BOOLEAN_OR; break;
+                default: break;
+            }
+
             left = expression;
         }
 
@@ -447,6 +480,20 @@ public class Parser {
             case TokenType.STRING: {
                 StringLiteral value = new StringLiteral();
                 value.value = eat().raw;
+                return value;
+            }
+
+            case TokenType.KEYWORD_TRUE: {
+                eat();
+                BooleanLiteral value = new BooleanLiteral();
+                value.value = true;
+                return value;
+            }
+
+            case TokenType.KEYWORD_FALSE: {
+                eat();
+                BooleanLiteral value = new BooleanLiteral();
+                value.value = false;
                 return value;
             }
 
