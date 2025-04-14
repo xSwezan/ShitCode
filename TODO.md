@@ -1,6 +1,6 @@
 # else, elseif
 # List
-```
+```sh
 create list called myList
 append "Hello" to myList
 
@@ -10,7 +10,7 @@ remove index from myList
 ```
 
 # Bundle (like a table)
-```
+```sh
 create function called newPlayer {
     create bundle called player
 
@@ -34,7 +34,7 @@ call talk with "Player health: " + player->health
 
 # Imports
 Imports another script as a bundle
-```
+```sh
 import "test.shit" as test
 ```
 

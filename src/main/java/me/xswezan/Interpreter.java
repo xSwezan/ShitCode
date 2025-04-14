@@ -61,7 +61,17 @@ public class Interpreter {
 
     public static void EvaluateVariableDeclarationStatement(VariableDeclarationStatement statement, Environment environment) {
         assert environment.HasVariable(statement.name) : "Cannot create two variables of the same name!";
-        environment.SetVariable(statement.name, new RuntimeNothing());
+
+        RuntimeValue value;
+        switch (statement.type) {
+            case "string": value = new RuntimeString(""); break;
+            case "number": value = new RuntimeNumber(0.0); break;
+            case "boolean": value = new RuntimeBoolean(true); break;
+            case "function": value = new RuntimeNothing(); break;
+            default: throw new RuntimeException("You idiot, you cannot create a variable of type '" + statement.type + "'!");
+        }
+
+        environment.SetVariable(statement.name, value);
     }
 
     public static void EvaluateFunctionDeclarationStatement(FunctionDeclarationStatement statement, Environment environment) {

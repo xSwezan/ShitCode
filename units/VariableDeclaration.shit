@@ -1,0 +1,11 @@
+create string called testString
+call talk with "Default string: '" + testString + "'"
+
+create number called testNumber
+call talk with "Default number: " + testNumber
+
+create boolean called testBoolean
+call talk with "Default boolean: " + testBoolean
+
+create function called testFunction {}
+call talk with "Default function: " + testFunction
