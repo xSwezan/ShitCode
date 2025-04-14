@@ -151,6 +151,12 @@ public class Lexer {
                 token.raw = result;
                 token.type = TokenType.STRING;
                 tokens.add(token);
+            } else if (c == '#') { //> Skip comments
+                while (i < numChars) {
+                    char thisChar = code.charAt(i + 1);
+                    if (thisChar == '\n') break;
+                    ++i;
+                }
             } else if (Character.isLetter(c)) {
                 String result = Character.toString(c);
 
