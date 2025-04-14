@@ -1,0 +1,12 @@
+create bundle called player
+
+create number called health in player
+set player->health to 100
+
+create function called takeDamage in player using number damage {
+    set player->health to player->health - damage
+}
+
+call talk with "Player health: " + player->health
+call player->takeDamage with 10
+call talk with "Player health: " + player->health

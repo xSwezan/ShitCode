@@ -121,7 +121,7 @@ public class Parser {
     }
 
     static class CallExpression extends Expression {
-        String functionName;
+        Expression functionName;
         Vector<Expression> arguments = new Vector<Expression>();
     }
 
@@ -221,6 +221,7 @@ public class Parser {
             FunctionDeclarationStatement statement = new FunctionDeclarationStatement();
             statement.name = name.raw;
             statement.type = variableType.raw;
+            statement.inBundle = inBundle;
 
             if (atIs(TokenType.KEYWORD_USING)) {
                 eat(); // Eat using keyword
@@ -341,10 +342,12 @@ public class Parser {
         if (atIs(TokenType.KEYWORD_CALL)) {
             eat(); // Eat call keyword
 
-            Token token = expect(TokenType.IDENTIFIER, "Expected function name identifier following 'call' keyword!");
+            // Token token = expect(TokenType.IDENTIFIER, "Expected function name identifier following 'call' keyword!");
+            Expression variableName = parseMemberExpression();
 
             CallExpression expression = new CallExpression();
-            expression.functionName = token.raw;
+            expression.functionName = variableName;
+            // expression.functionName = token.raw;
 
             if (atIs(TokenType.KEYWORD_WITH)) {
                 eat(); // Eat with keyword

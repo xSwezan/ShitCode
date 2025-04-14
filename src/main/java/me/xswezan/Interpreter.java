@@ -86,12 +86,21 @@ public class Interpreter {
 
     public static void EvaluateFunctionDeclarationStatement(FunctionDeclarationStatement statement, Environment environment) {
         RuntimeFunction function = new RuntimeFunction();
-        function.declarationEnvironment = environment;
         function.parameters = statement.parameters;
+        function.declarationEnvironment = environment;
         function.body = statement.body;
 
         if (!statement.name.isEmpty()) {
-            environment.SetVariable(statement.name, function);
+            if (statement.inBundle != null) {
+                RuntimeValue bundleValue = EvaluateExpression(statement.inBundle, environment);
+                if (bundleValue instanceof RuntimeBundle bundle) {
+                    bundle.environment.SetVariable(statement.name, function);
+                } else {
+                    throw new RuntimeException("Expected valid bundle following 'in' keyword in variable declaration statement! Got " + bundleValue + "!");
+                }
+            } else {
+                environment.SetVariable(statement.name, function);
+            }
         }
     }
 
@@ -303,9 +312,20 @@ public class Interpreter {
             arguments.add(EvaluateExpression(argument, environment));
         }
 
-        RuntimeValue function = environment.GetVariable(expression.functionName);
-        assert function != null : "No function with the name '" + expression.functionName + "' was found!";
-        assert function instanceof RuntimeFunction || function instanceof RuntimeNativeFunction : "Can't call a non-function variable!";
+        RuntimeValue function = null;
+        if (expression.functionName instanceof IdentifierExpression name) {
+            Environment container = environment.GetVariableContainer(name.symbol);
+            function = container.GetVariable(name.symbol);
+        } else if (expression.functionName instanceof MemberExpression memberExpression) {
+            RuntimeValue object = EvaluateExpression(memberExpression.object, environment);
+            if (object instanceof RuntimeBundle bundle && memberExpression.member instanceof IdentifierExpression member) {
+                function = bundle.environment.GetVariable(member.symbol);
+                for (String k : bundle.environment.variables.keySet()) {
+                }
+            }
+        }
+
+        if (function == null) throw new RuntimeException("No function with the name '" + expression.functionName + "' was found!");
 
         if (function instanceof RuntimeNativeFunction nativeFunction) {
             RuntimeValue[] args = new RuntimeValue[arguments.size()];
@@ -323,6 +343,8 @@ public class Interpreter {
             }
 
             EvaluateBody(func.body, scope);
+        } else {
+            throw new RuntimeException("Can't call a non-function variable!");
         }
 
         return null;
