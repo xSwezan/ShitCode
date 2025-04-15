@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
 
+import me.xswezan.Environment.RuntimeBundle;
 import me.xswezan.Environment.RuntimeNativeFunction;
 import me.xswezan.Environment.RuntimeNumber;
 import me.xswezan.Environment.RuntimeString;
@@ -74,6 +75,13 @@ public class Main {
             System.out.println("");
             return null;
         }));
+
+        { // Math library
+            RuntimeBundle mathLibrary = new RuntimeBundle();
+            mathLibrary.environment.SetVariable("pi", new RuntimeNumber(3.14159265));
+            mathLibrary.environment.SetVariable("tau", new RuntimeNumber(3.14159265 * 2));
+            global.SetVariable("math", mathLibrary);
+        }
 
         // final int ALIGN = 20;
         // for (Token token : tokens) {
