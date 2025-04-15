@@ -77,8 +77,13 @@ public class Parser {
         DIVIDE,
         MODULUS,
         BOOLEAN_EQUALS,
+        BOOLEAN_NOT_EQUALS,
         BOOLEAN_AND,
         BOOLEAN_OR,
+        BOOLEAN_LESS_THAN,
+        BOOLEAN_GREATER_THAN,
+        BOOLEAN_LESS_THAN_OR_EQUAL,
+        BOOLEAN_GREATER_THAN_OR_EQUAL,
     }
 
     enum UnaryOperatorType {
@@ -143,6 +148,7 @@ public class Parser {
     \*--------*/
 
     Vector<Token> tokens = new Vector<Token>();
+    int currentLine = 1;
 
     public Body Parse(Vector<Token> tokenList) {
         tokens = tokenList;
@@ -165,8 +171,8 @@ public class Parser {
 
     private Token expect(TokenType type, String message) {
         Token atToken = eat();
-        if (atToken == null) throw new RuntimeException(message + " [No token found!]");
-        if (atToken.type != type) throw new RuntimeException(message + " [Expected " + type + " but found " + atToken.type + "!]");
+        if (atToken == null) error(message + " [No token found!]");
+        if (atToken.type != type) error(message + " [Expected " + type + " but found " + atToken + "!]");
 
         return atToken;
     }
@@ -183,6 +189,10 @@ public class Parser {
         return tokens.removeFirst();
     }
 
+    private void error(String message) throws RuntimeException {
+        throw new RuntimeException("Error at line " + currentLine + "! [" + message + "]");
+    }
+
     /*---------*\
     |  Parsing  |
     \*---------*/
@@ -196,9 +206,9 @@ public class Parser {
             case TokenType.KEYWORD_IF: return parseIfStatement();
             case TokenType.KEYWORD_RETURN: return parseReturnStatement();
             case TokenType.OPEN_SCOPE: return parseScopeStatement();
-            case TokenType.NEW_LINE: eat(); break;
+            case TokenType.NEW_LINE: ++currentLine; eat(); break;
             default: return parseExpression();
-            // default: throw new RuntimeException("Unexpected token: " + at().raw + " (" + at().type + ")");
+            // default: error("Unexpected token: " + at().raw + " (" + at().type + ")");
         }
 
         return null;
@@ -407,19 +417,36 @@ public class Parser {
         return left;
     }
 
-    // left [equals/and/or] right
+    // left [==, <, >, <=, >=] right
     private Expression parseBooleanExpression() {
         Expression left = parseAdditiveExpression();
 
-        while (atIs(TokenType.KEYWORD_OPERATOR_EQUALS)) {
-            eat(); // Eat operator
+        while (
+            atIs(TokenType.KEYWORD_OPERATOR_EQUALS) ||
+            atIs(TokenType.KEYWORD_OPERATOR_NOT_EQUALS) ||
+            atIs(TokenType.KEYWORD_OPERATOR_LESS_THAN) ||
+            atIs(TokenType.KEYWORD_OPERATOR_GREATER_THAN) ||
+            atIs(TokenType.KEYWORD_OPERATOR_LESS_THAN_OR_EQUAL) ||
+            atIs(TokenType.KEYWORD_OPERATOR_GREATER_THAN_OR_EQUAL)
+        ) {
+            TokenType type = eat().type; // Eat operator
 
             Expression right = parseAdditiveExpression();
 
             BinaryExpression expression = new BinaryExpression();
-            expression.operator = BinaryOperatorType.BOOLEAN_EQUALS;
             expression.left = left;
             expression.right = right;
+
+            switch (type) {
+                case TokenType.KEYWORD_OPERATOR_EQUALS: expression.operator = BinaryOperatorType.BOOLEAN_EQUALS; break;
+                case TokenType.KEYWORD_OPERATOR_NOT_EQUALS: expression.operator = BinaryOperatorType.BOOLEAN_NOT_EQUALS; break;
+                case TokenType.KEYWORD_OPERATOR_LESS_THAN: expression.operator = BinaryOperatorType.BOOLEAN_LESS_THAN; break;
+                case TokenType.KEYWORD_OPERATOR_GREATER_THAN: expression.operator = BinaryOperatorType.BOOLEAN_GREATER_THAN; break;
+                case TokenType.KEYWORD_OPERATOR_LESS_THAN_OR_EQUAL: expression.operator = BinaryOperatorType.BOOLEAN_LESS_THAN_OR_EQUAL; break;
+                case TokenType.KEYWORD_OPERATOR_GREATER_THAN_OR_EQUAL: expression.operator = BinaryOperatorType.BOOLEAN_GREATER_THAN_OR_EQUAL; break;
+                default: error("Couldn't tokenize boolean expression");
+            }
+
             left = expression;
         }
 
@@ -538,10 +565,12 @@ public class Parser {
             case TokenType.OPEN_PAREN: {
                 eat(); // Eat open paren
                 Expression value = parseExpression();
-                expect(TokenType.CLOSE_PAREN, "Expected closing parenthesis following parenthesized expression!");
+                expect(TokenType.CLOSE_PAREN, "Expected closing parenthesis following parenthesized expression! " + value);
                 return value;
             }
-            default: throw new RuntimeException("Unexpected token found during parsing! " + at().type);
+            default: error("Unexpected token found during parsing! " + at().type);
         }
+
+        return null;
     }
 }

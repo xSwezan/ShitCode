@@ -291,6 +291,49 @@ public class Interpreter {
                     return new RuntimeBoolean(leftString.value.equals(rightString.value));
                 }
             }
+            case BinaryOperatorType.BOOLEAN_NOT_EQUALS: {
+                if (left == null || right == null) {
+                    return new RuntimeBoolean(left != right);
+                }
+
+                if (left.getClass() != right.getClass()) {
+                    return new RuntimeBoolean(true);
+                }
+
+                //> number != number
+                if (left instanceof RuntimeNumber leftNumber && right instanceof RuntimeNumber rightNumber) {
+                    return new RuntimeBoolean(leftNumber.value != rightNumber.value);
+                }
+
+                //> string != string
+                if (left instanceof RuntimeString leftString && right instanceof RuntimeString rightString) {
+                    return new RuntimeBoolean(!leftString.value.equals(rightString.value));
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_LESS_THAN: {
+                //> number == number
+                if (left instanceof RuntimeNumber leftNumber && right instanceof RuntimeNumber rightNumber) {
+                    return new RuntimeBoolean(leftNumber.value < rightNumber.value);
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_GREATER_THAN: {
+                //> number == number
+                if (left instanceof RuntimeNumber leftNumber && right instanceof RuntimeNumber rightNumber) {
+                    return new RuntimeBoolean(leftNumber.value > rightNumber.value);
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_LESS_THAN_OR_EQUAL: {
+                //> number == number
+                if (left instanceof RuntimeNumber leftNumber && right instanceof RuntimeNumber rightNumber) {
+                    return new RuntimeBoolean(leftNumber.value <= rightNumber.value);
+                }
+            }
+            case BinaryOperatorType.BOOLEAN_GREATER_THAN_OR_EQUAL: {
+                //> number == number
+                if (left instanceof RuntimeNumber leftNumber && right instanceof RuntimeNumber rightNumber) {
+                    return new RuntimeBoolean(leftNumber.value >= rightNumber.value);
+                }
+            }
             case BinaryOperatorType.BOOLEAN_AND: {
                 //> bool && bool
                 if (left instanceof RuntimeBoolean leftBoolean && right instanceof RuntimeBoolean rightBoolean) {

@@ -44,6 +44,11 @@ public class Lexer {
         KEYWORD_AND,
         KEYWORD_OR,
         KEYWORD_OPERATOR_EQUALS,
+        KEYWORD_OPERATOR_NOT_EQUALS,
+        KEYWORD_OPERATOR_LESS_THAN,
+        KEYWORD_OPERATOR_GREATER_THAN,
+        KEYWORD_OPERATOR_LESS_THAN_OR_EQUAL,
+        KEYWORD_OPERATOR_GREATER_THAN_OR_EQUAL,
 
         OPERATOR_ADD,
         OPERATOR_SUBTRACT,
@@ -65,6 +70,8 @@ public class Lexer {
     public static class Token {
         String raw;
         TokenType type;
+
+        public String toString() { return "[" + type + "] " + raw; }
     }
 
     public static Vector<Token> Lexilize(String code) {
@@ -118,6 +125,40 @@ public class Lexer {
                 Token token = new Token();
                 token.raw = s;
                 token.type = TokenType.OPERATOR_SUBTRACT;
+                tokens.add(token);
+            } else if (c == '=' && code.charAt(i + 1) == '=') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_EQUALS;
+                tokens.add(token);
+                ++i;
+            } else if (c == '!' && code.charAt(i + 1) == '=') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_NOT_EQUALS;
+                tokens.add(token);
+                ++i;
+            } else if (c == '<' && code.charAt(i + 1) == '=') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_LESS_THAN_OR_EQUAL;
+                tokens.add(token);
+                ++i;
+            } else if (c == '>' && code.charAt(i + 1) == '=') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_GREATER_THAN_OR_EQUAL;
+                tokens.add(token);
+                ++i;
+            } else if (c == '<') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_LESS_THAN;
+                tokens.add(token);
+            } else if (c == '>') {
+                Token token = new Token();
+                token.raw = s;
+                token.type = TokenType.KEYWORD_OPERATOR_GREATER_THAN;
                 tokens.add(token);
             } else if (c == '*') {
                 Token token = new Token();
@@ -251,7 +292,7 @@ public class Lexer {
             case "not": token.type = TokenType.KEYWORD_NOT; break;
             case "and": token.type = TokenType.KEYWORD_AND; break;
             case "or": token.type = TokenType.KEYWORD_OR; break;
-            case "equals": token.type = TokenType.KEYWORD_OPERATOR_EQUALS; break;
+            // case "equals": token.type = TokenType.KEYWORD_OPERATOR_EQUALS; break;
 
             case "in": token.type = TokenType.KEYWORD_IN; break;
 
