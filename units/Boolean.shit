@@ -8,26 +8,26 @@
 call talk with "Basic Boolean Operations"
 
 # Testing the 'not' operation
-call talk with "not true - Expected: false, Result: " + (call toString with not true)
-call talk with "not false - Expected: true, Result: " + (call toString with not false)
+call talk with "not true - Expected: false, Result: " + not true
+call talk with "not false - Expected: true, Result: " + not false
 
 # Testing the 'and' operation
-call talk with "true and true - Expected: true, Result: " + (call toString with true and true)
-call talk with "true and false - Expected: false, Result: " + (call toString with true and false)
-call talk with "false and true - Expected: false, Result: " + (call toString with false and true)
-call talk with "false and false - Expected: false, Result: " + (call toString with false and false)
+call talk with "true and true - Expected: true, Result: " + true and true
+call talk with "true and false - Expected: false, Result: " + true and false
+call talk with "false and true - Expected: false, Result: " + false and true
+call talk with "false and false - Expected: false, Result: " + false and false
 
 # Testing the 'or' operation
-call talk with "true or true - Expected: true, Result: " + (call toString with true or true)
-call talk with "true or false - Expected: true, Result: " + (call toString with true or false)
-call talk with "false or true - Expected: true, Result: " + (call toString with false or true)
-call talk with "false or false - Expected: false, Result: " + (call toString with false or false)
+call talk with "true or true - Expected: true, Result: " + true or true
+call talk with "true or false - Expected: true, Result: " + true or false
+call talk with "false or true - Expected: true, Result: " + false or true
+call talk with "false or false - Expected: false, Result: " + false or false
 
 # Testing the '==' operation with booleans
-call talk with "true == true - Expected: true, Result: " + (call toString with true == true)
-call talk with "false == false - Expected: true, Result: " + (call toString with false == false)
-call talk with "true == false - Expected: false, Result: " + (call toString with true == false)
-call talk with "false == true - Expected: false, Result: " + (call toString with false == true)
+call talk with "true == true - Expected: true, Result: " + true == true
+call talk with "false == false - Expected: true, Result: " + false == false
+call talk with "true == false - Expected: false, Result: " + true == false
+call talk with "false == true - Expected: false, Result: " + false == true
 
 #>-------------------------------<#
 #>- Combined Boolean Operations -<#
@@ -36,16 +36,16 @@ call talk with "false == true - Expected: false, Result: " + (call toString with
 call talk with "Combined Boolean Operations"
 
 # Testing combinations of operations
-call talk with "true and true and true - Expected: true, Result: " + (call toString with true and true and true)
-call talk with "true and false and true - Expected: false, Result: " + (call toString with true and false and true)
-call talk with "true or false or false - Expected: true, Result: " + (call toString with true or false or false)
-call talk with "false or false or false - Expected: false, Result: " + (call toString with false or false or false)
+call talk with "true and true and true - Expected: true, Result: " + true and true and true
+call talk with "true and false and true - Expected: false, Result: " + true and false and true
+call talk with "true or false or false - Expected: true, Result: " + true or false or false
+call talk with "false or false or false - Expected: false, Result: " + false or false or false
 
 # Testing not with and/or
-call talk with "not (true and false) - Expected: true, Result: " + (call toString with not (true and false))
-call talk with "not (true or false) - Expected: false, Result: " + (call toString with not (true or false))
-call talk with "(not true) and false - Expected: false, Result: " + (call toString with (not true) and false)
-call talk with "(not false) or true - Expected: true, Result: " + (call toString with (not false) or true)
+call talk with "not (true and false) - Expected: true, Result: " + not (true and false)
+call talk with "not (true or false) - Expected: false, Result: " + not (true or false)
+call talk with "(not true) and false - Expected: false, Result: " + (not true) and false
+call talk with "(not false) or true - Expected: true, Result: " + (not false) or true
 
 #>-------------------------------<#
 #>- Complex Boolean Expressions -<#
@@ -54,10 +54,10 @@ call talk with "(not false) or true - Expected: true, Result: " + (call toString
 call talk with "Complex Boolean Expressions"
 
 # Testing operator precedence and parentheses
-call talk with "(true or false) and false - Expected: false, Result: " + (call toString with (true or false) and false)
-call talk with "true or (false and false) - Expected: true, Result: " + (call toString with true or (false and false))
-call talk with "not (true and true) or false - Expected: false, Result: " + (call toString with not (true and true) or false)
-call talk with "not ((true or false) and false) - Expected: true, Result: " + (call toString with not ((true or false) and false))
+call talk with "(true or false) and false - Expected: false, Result: " + (true or false) and false
+call talk with "true or (false and false) - Expected: true, Result: " + true or (false and false)
+call talk with "not (true and true) or false - Expected: false, Result: " + not (true and true) or false
+call talk with "not ((true or false) and false) - Expected: true, Result: " + not ((true or false) and false)
 
 #>--------------------------------<#
 #>- Boolean Logic with Variables -<#
@@ -73,13 +73,13 @@ set a to true
 set b to false
 set c to true
 
-call talk with "a and b - Expected: false, Result: " + (call toString with a and b)
-call talk with "a or b - Expected: true, Result: " + (call toString with a or b)
-call talk with "not a - Expected: false, Result: " + (call toString with not a)
-call talk with "a == c - Expected: true, Result: " + (call toString with a == c)
-call talk with "a and c - Expected: true, Result: " + (call toString with a and c)
-call talk with "(a or b) and not c - Expected: false, Result: " + (call toString with (a or b) and not c)
-call talk with "not (a == b) - Expected: true, Result: " + (call toString with not (a == b))
+call talk with "a and b - Expected: false, Result: " + a and b
+call talk with "a or b - Expected: true, Result: " + a or b
+call talk with "not a - Expected: false, Result: " + not a
+call talk with "a == c - Expected: true, Result: " + a == c
+call talk with "a and c - Expected: true, Result: " + a and c
+call talk with "(a or b) and not c - Expected: false, Result: " + (a or b) and not c
+call talk with "not (a == b) - Expected: true, Result: " + not (a == b)
 
 #>------------------------------<#
 #>- Boolean Logic in Functions -<#
@@ -104,28 +104,28 @@ create function called implies using boolean p, boolean q {
 }
 
 # Test NAND function (logical NAND: ¬(p ∧ q))
-call talk with "nand(true, true) - Expected: false, Result: " + (call toString with (call nand with true, true))
-call talk with "nand(true, false) - Expected: true, Result: " + (call toString with (call nand with true, false))
-call talk with "nand(false, true) - Expected: true, Result: " + (call toString with (call nand with false, true))
-call talk with "nand(false, false) - Expected: true, Result: " + (call toString with (call nand with false, false))
+call talk with "nand(true, true) - Expected: false, Result: " + (call nand with true, true)
+call talk with "nand(true, false) - Expected: true, Result: " + (call nand with true, false)
+call talk with "nand(false, true) - Expected: true, Result: " + (call nand with false, true)
+call talk with "nand(false, false) - Expected: true, Result: " + (call nand with false, false)
 
 # Test NOR function (logical NOR: ¬(p ∨ q))
-call talk with "nor(true, true) - Expected: false, Result: " + (call toString with (call nor with true, true))
-call talk with "nor(true, false) - Expected: false, Result: " + (call toString with (call nor with true, false))
-call talk with "nor(false, true) - Expected: false, Result: " + (call toString with (call nor with false, true))
-call talk with "nor(false, false) - Expected: true, Result: " + (call toString with (call nor with false, false))
+call talk with "nor(true, true) - Expected: false, Result: " + (call nor with true, true)
+call talk with "nor(true, false) - Expected: false, Result: " + (call nor with true, false)
+call talk with "nor(false, true) - Expected: false, Result: " + (call nor with false, true)
+call talk with "nor(false, false) - Expected: true, Result: " + (call nor with false, false)
 
 # Test XOR function (logical XOR: (p ∧ ¬q) ∨ (¬p ∧ q))
-call talk with "xor(true, true) - Expected: false, Result: " + (call toString with (call xor with true, true))
-call talk with "xor(true, false) - Expected: true, Result: " + (call toString with (call xor with true, false))
-call talk with "xor(false, true) - Expected: true, Result: " + (call toString with (call xor with false, true))
-call talk with "xor(false, false) - Expected: false, Result: " + (call toString with (call xor with false, false))
+call talk with "xor(true, true) - Expected: false, Result: " + (call xor with true, true)
+call talk with "xor(true, false) - Expected: true, Result: " + (call xor with true, false)
+call talk with "xor(false, true) - Expected: true, Result: " + (call xor with false, true)
+call talk with "xor(false, false) - Expected: false, Result: " + (call xor with false, false)
 
 # Test IMPLIES function (logical implication: ¬p ∨ q)
-call talk with "implies(true, true) - Expected: true, Result: " + (call toString with (call implies with true, true))
-call talk with "implies(true, false) - Expected: false, Result: " + (call toString with (call implies with true, false))
-call talk with "implies(false, true) - Expected: true, Result: " + (call toString with (call implies with false, true))
-call talk with "implies(false, false) - Expected: true, Result: " + (call toString with (call implies with false, false))
+call talk with "implies(true, true) - Expected: true, Result: " + (call implies with true, true)
+call talk with "implies(true, false) - Expected: false, Result: " + (call implies with true, false)
+call talk with "implies(false, true) - Expected: true, Result: " + (call implies with false, true)
+call talk with "implies(false, false) - Expected: true, Result: " + (call implies with false, false)
 
 #>----------------------------------<#
 #>- Comparison Operator Operations -<#
@@ -142,24 +142,24 @@ set y to 20
 set z to 10
 
 # Testing less than '<' operator
-call talk with "x < y - Expected: true, Result: " + (call toString with x < y)
-call talk with "y < x - Expected: false, Result: " + (call toString with y < x)
-call talk with "x < z - Expected: false, Result: " + (call toString with x < z)
+call talk with "x < y - Expected: true, Result: " + x < y
+call talk with "y < x - Expected: false, Result: " + y < x
+call talk with "x < z - Expected: false, Result: " + x < z
 
 # Testing greater than '>' operator
-call talk with "x > y - Expected: false, Result: " + (call toString with x > y)
-call talk with "y > x - Expected: true, Result: " + (call toString with y > x)
-call talk with "x > z - Expected: false, Result: " + (call toString with x > z)
+call talk with "x > y - Expected: false, Result: " + x > y
+call talk with "y > x - Expected: true, Result: " + y > x
+call talk with "x > z - Expected: false, Result: " + x > z
 
 # Testing less than or equal '<=' operator
-call talk with "x <= y - Expected: true, Result: " + (call toString with x <= y)
-call talk with "y <= x - Expected: false, Result: " + (call toString with y <= x)
-call talk with "x <= z - Expected: true, Result: " + (call toString with x <= z)
+call talk with "x <= y - Expected: true, Result: " + x <= y
+call talk with "y <= x - Expected: false, Result: " + y <= x
+call talk with "x <= z - Expected: true, Result: " + x <= z
 
 # Testing greater than or equal '>=' operator
-call talk with "x >= y - Expected: false, Result: " + (call toString with x >= y)
-call talk with "y >= x - Expected: true, Result: " + (call toString with y >= x)
-call talk with "x >= z - Expected: true, Result: " + (call toString with x >= z)
+call talk with "x >= y - Expected: false, Result: " + x >= y
+call talk with "y >= x - Expected: true, Result: " + y >= x
+call talk with "x >= z - Expected: true, Result: " + x >= z
 
 #>-------------------------------------<#
 #>- Boolean Logic with Equality Tests -<#
@@ -168,12 +168,12 @@ call talk with "x >= z - Expected: true, Result: " + (call toString with x >= z)
 call talk with "Boolean Logic with Equality Tests"
 
 # Testing == with other types along with boolean logic
-call talk with "x == z - Expected: true, Result: " + (call toString with x == z)
-call talk with "x == y - Expected: false, Result: " + (call toString with x == y)
-call talk with "(x == z) and (y > x) - Expected: true, Result: " + (call toString with (x == z) and (y > x))
-call talk with "(x < y) or (y == z) - Expected: true, Result: " + (call toString with (x < y) or (y == z))
-call talk with "not (x == y) - Expected: true, Result: " + (call toString with not (x == y))
-call talk with "(x <= z) and not (y == x) - Expected: true, Result: " + (call toString with (x <= z) and not (y == x))
+call talk with "x == z - Expected: true, Result: " + x == z
+call talk with "x == y - Expected: false, Result: " + x == y
+call talk with "(x == z) and (y > x) - Expected: true, Result: " + (x == z) and (y > x)
+call talk with "(x < y) or (y == z) - Expected: true, Result: " + (x < y) or (y == z)
+call talk with "not (x == y) - Expected: true, Result: " + not (x == y)
+call talk with "(x <= z) and not (y == x) - Expected: true, Result: " + (x <= z) and not (y == x)
 
 #>----------------------------------<#
 #>- Combined Comparison Operations -<#
@@ -182,10 +182,10 @@ call talk with "(x <= z) and not (y == x) - Expected: true, Result: " + (call to
 call talk with "Combined Comparison Operations"
 
 # Testing combinations of comparison operators
-call talk with "(x < y) and (y > z) - Expected: true, Result: " + (call toString with (x < y) and (y > z))
-call talk with "(x <= z) or (y <= x) - Expected: true, Result: " + (call toString with (x <= z) or (y <= x))
-call talk with "not (x > y) and (z == x) - Expected: true, Result: " + (call toString with not (x > y) and (z == x))
-call talk with "(x >= z) and (z >= x) and (x != y) - Expected: true, Result: " + (call toString with (x >= z) and (z >= x) and (x != y))
+call talk with "(x < y) and (y > z) - Expected: true, Result: " + (x < y) and (y > z)
+call talk with "(x <= z) or (y <= x) - Expected: true, Result: " + (x <= z) or (y <= x)
+call talk with "not (x > y) and (z == x) - Expected: true, Result: " + not (x > y) and (z == x)
+call talk with "(x >= z) and (z >= x) and (x != y) - Expected: true, Result: " + (x >= z) and (z >= x) and (x != y)
 
 #>----------------------------<#
 #>- Complex Boolean Function -<#
@@ -215,14 +215,14 @@ create function called evaluateLogic using boolean p, boolean q, boolean r {
 }
 
 # Test the evaluateLogic function with all possible combinations
-call talk with "evaluateLogic(true, true, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, true, true))
-call talk with "evaluateLogic(true, true, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, true, false))
-call talk with "evaluateLogic(true, false, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, false, true))
-call talk with "evaluateLogic(true, false, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with true, false, false))
-call talk with "evaluateLogic(false, true, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, true, true))
-call talk with "evaluateLogic(false, true, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, true, false))
-call talk with "evaluateLogic(false, false, true) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, false, true))
-call talk with "evaluateLogic(false, false, false) - Expected: true, Result: " + (call toString with (call evaluateLogic with false, false, false))
+call talk with "evaluateLogic(true, true, true) - Expected: true, Result: " + (call evaluateLogic with true, true, true)
+call talk with "evaluateLogic(true, true, false) - Expected: true, Result: " + (call evaluateLogic with true, true, false)
+call talk with "evaluateLogic(true, false, true) - Expected: true, Result: " + (call evaluateLogic with true, false, true)
+call talk with "evaluateLogic(true, false, false) - Expected: true, Result: " + (call evaluateLogic with true, false, false)
+call talk with "evaluateLogic(false, true, true) - Expected: true, Result: " + (call evaluateLogic with false, true, true)
+call talk with "evaluateLogic(false, true, false) - Expected: true, Result: " + (call evaluateLogic with false, true, false)
+call talk with "evaluateLogic(false, false, true) - Expected: true, Result: " + (call evaluateLogic with false, false, true)
+call talk with "evaluateLogic(false, false, false) - Expected: true, Result: " + (call evaluateLogic with false, false, false)
 
 #>---------------------------------------<#
 #>- Numeric Comparisons in Conditionals -<#
@@ -235,6 +235,6 @@ create function called compareNumbers using number a, number b {
 }
 
 # Test compareNumbers function
-call talk with "compareNumbers(5, 10) - Expected: true, Result: " + (call toString with (call compareNumbers with 5, 10))
-call talk with "compareNumbers(10, 5) - Expected: false, Result: " + (call toString with (call compareNumbers with 10, 5))
-call talk with "compareNumbers(7, 7) - Expected: false, Result: " + (call toString with (call compareNumbers with 7, 7))
+call talk with "compareNumbers(5, 10) - Expected: true, Result: " + (call compareNumbers with 5, 10)
+call talk with "compareNumbers(10, 5) - Expected: false, Result: " + (call compareNumbers with 10, 5)
+call talk with "compareNumbers(7, 7) - Expected: false, Result: " + (call compareNumbers with 7, 7)

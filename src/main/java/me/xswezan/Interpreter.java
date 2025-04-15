@@ -348,7 +348,7 @@ public class Interpreter {
             }
         }
 
-        throw new RuntimeException("Couldn't evaluate " + expression.operator + " binary expression on values: " + left + " and " + right + "!");
+        throw new RuntimeException("Couldn't evaluate " + expression.operator + " binary expression on values: \u001B[30;43;1m" + left + "\u001B[0m and \u001B[30;43;1m" + right + "\u001B[0m!");
     }
 
     public static RuntimeValue EvaluateMemberExpression(MemberExpression expression, Environment environment) {
