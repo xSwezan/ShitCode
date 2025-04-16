@@ -1,11 +1,214 @@
-create string called testString
-call talk with "Default string: '" + testString + "'"
+# AI Generated Unit Tests for Variable Declaration
+# Testing creation, assignment, and manipulation of different variable types
 
-create number called testNumber
-call talk with "Default number: " + testNumber
+#>-------------------------------<#
+#>- Boolean Variable Testing -<#
+#>-------------------------------<#
 
-create boolean called testBoolean
-call talk with "Default boolean: " + testBoolean
+call talk with "Boolean Variable Testing"
 
-create function called testFunction {}
-call talk with "Default function: " + testFunction
+# Boolean variable creation and default initialization
+create boolean called boolVar1
+call talk with "Boolean default value - Expected: false, Result: " + (call toString with boolVar1)
+
+# Boolean variable creation with assignment
+create boolean called boolVar2
+set boolVar2 to true
+call talk with "Boolean assigned true - Expected: true, Result: " + (call toString with boolVar2)
+
+# Boolean variable reassignment
+set boolVar2 to false
+call talk with "Boolean reassigned to false - Expected: false, Result: " + (call toString with boolVar2)
+
+# Boolean variable with expression assignment
+create boolean called boolVar3
+set boolVar3 to not boolVar2
+call talk with "Boolean assigned 'not false' - Expected: true, Result: " + (call toString with boolVar3)
+
+# Boolean variable created from expression
+create boolean called boolVar4
+set boolVar4 to boolVar2 or boolVar3
+call talk with "Boolean assigned 'false or true' - Expected: true, Result: " + (call toString with boolVar4)
+
+#>------------------------------<#
+#>- Number Variable Testing -<#
+#>------------------------------<#
+
+call talk with "Number Variable Testing"
+
+# Number variable creation and default initialization
+create number called numVar1
+call talk with "Number default value - Expected: 0, Result: " + (call toString with numVar1)
+
+# Number variable creation with assignment
+create number called numVar2
+set numVar2 to 42
+call talk with "Number assigned 42 - Expected: 42, Result: " + (call toString with numVar2)
+
+# Number variable reassignment
+set numVar2 to 100
+call talk with "Number reassigned to 100 - Expected: 100, Result: " + (call toString with numVar2)
+
+# Number variable with expression assignment
+create number called numVar3
+set numVar3 to numVar2 + 50
+call talk with "Number assigned '100 + 50' - Expected: 150, Result: " + (call toString with numVar3)
+
+# Number variable with complex expression
+create number called numVar4
+set numVar4 to (numVar2 * 2) - (numVar3 / 3)
+call talk with "Number assigned '(100 * 2) - (150 / 3)' - Expected: 150, Result: " + (call toString with numVar4)
+
+# Number variable with decimal assignment
+create number called numVar5
+set numVar5 to 3.14
+call talk with "Number assigned 3.14 - Expected: 3.14, Result: " + (call toString with numVar5)
+
+# Number variable with negative assignment
+create number called numVar6
+set numVar6 to -10
+call talk with "Number assigned -10 - Expected: -10, Result: " + (call toString with numVar6)
+
+#>------------------------------<#
+#>- String Variable Testing -<#
+#>------------------------------<#
+
+call talk with "String Variable Testing"
+
+# String variable creation and default initialization
+create string called strVar1
+call talk with "String default value - Expected: '', Result: '" + strVar1 + "'"
+
+# String variable creation with assignment
+create string called strVar2
+set strVar2 to "Hello World"
+call talk with "String assigned 'Hello World' - Expected: 'Hello World', Result: '" + strVar2 + "'"
+
+# String variable reassignment
+set strVar2 to "Hello Universe"
+call talk with "String reassigned - Expected: 'Hello Universe', Result: '" + strVar2 + "'"
+
+# String variable with concatenation
+create string called strVar3
+set strVar3 to "Hello" + " " + "Developer"
+call talk with "String concatenation - Expected: 'Hello Developer', Result: '" + strVar3 + "'"
+
+# String with escaped quotes (using single quotes within double quotes)
+create string called strVar4
+set strVar4 to "The variable 'strVar3' contains: " + strVar3
+call talk with "String with internal quotes - Result: '" + strVar4 + "'"
+
+# String with number conversion
+create string called strVar5
+set strVar5 to "The answer is: " + (call toString with numVar2)
+call talk with "String with number conversion - Expected: 'The answer is: 100', Result: '" + strVar5 + "'"
+
+#>--------------------------<#
+#>- Variable Scope Testing -<#
+#>--------------------------<#
+
+call talk with "Variable Scope Testing"
+
+create number called globalVar
+set globalVar to 100
+
+create function called testLocalVars {
+    # Local variable shadows global
+    create number called globalVar
+    set globalVar to 200
+
+    create string called localVar
+    set localVar to "Local only"
+
+    call talk with "Inside function - Local globalVar: " + (call toString with globalVar)
+
+    return globalVar
+}
+
+create number called functionResult
+set functionResult to (call testLocalVars)
+call talk with "Function returned local value - Expected: 200, Result: " + (call toString with functionResult)
+call talk with "Outside function - Global globalVar: " + (call toString with globalVar)
+
+#>------------------------------------<#
+#>- Variable Type Mixing Testing -<#
+#>------------------------------------<#
+
+call talk with "Variable Type Mixing Testing"
+
+# String to number conversion
+create string called numberStr
+set numberStr to "42"
+
+create function called stringToNumber using string str {
+    create number called result
+    set result to (call toNumber with str)
+    return result
+}
+
+create number called convertedNumber
+set convertedNumber to (call stringToNumber with numberStr)
+call talk with "String to number conversion - Expected: 42, Result: " + (call toString with convertedNumber)
+
+# Boolean to string
+create boolean called testBool
+set testBool to true
+create string called boolStr
+set boolStr to "The value is: " + (call toString with testBool)
+call talk with "Boolean to string - Expected: 'The value is: true', Result: '" + boolStr + "'"
+
+#>---------------------------------<#
+#>- Variable Lifecycle Testing -<#
+#>---------------------------------<#
+
+call talk with "Variable Lifecycle Testing"
+
+create function called lifecycleTest {
+    # Create local variables
+    create number called counter
+    set counter to 0
+
+    # Modify local variable
+    set counter to counter + 1
+    set counter to counter + 1
+
+    create boolean called isZero
+    set isZero to counter == 0
+
+    # Create a conditional variable
+    create string called message
+    if isZero {
+        set message to "Counter is zero"
+    } else {
+        set message to "Counter is not zero: " + (call toString with counter)
+    }
+
+    return message
+}
+
+create string called lifecycleResult
+set lifecycleResult to (call lifecycleTest)
+call talk with "Variable lifecycle test - Result: '" + lifecycleResult + "'"
+
+#>------------------------------------<#
+#>- Complex Variable Expression Test -<#
+#>------------------------------------<#
+
+call talk with "Complex Variable Expression Test"
+
+create number called a
+create number called b
+create number called c
+
+set a to 10
+set b to 20
+set c to 30
+
+create number called complexResult
+set complexResult to (a + b) * c / (a + c)
+
+call talk with "Complex expression (a + b) * c / (a + c) - Expected: 22.5, Result: " + (call toString with complexResult)
+
+create boolean called complexBool
+set complexBool to (a < b and b < c) or (a == 10)
+call talk with "Complex boolean (a < b and b < c) or (a == 10) - Expected: true, Result: " + (call toString with complexBool)

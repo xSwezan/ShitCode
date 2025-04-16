@@ -36,7 +36,7 @@ create function called fibonacci in math using number num {
 
         set sequence to sequence + c
 
-        if not index equals num {
+        if index != num {
             set sequence to sequence + ", "
         }
     }

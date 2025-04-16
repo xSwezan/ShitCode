@@ -4,7 +4,7 @@ create list called myList
 append "Hello" to myList
 
 create number called index
-set index to find "Hello" in myList
+set index to (find "Hello" in myList)
 remove index from myList
 ```
 

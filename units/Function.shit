@@ -46,7 +46,7 @@ create function called joinStrings using string str1, string str2 {
 create function called isEven using number num {
 	create number called remainder
 	set remainder to num % 2
-	return remainder equals 0
+	return remainder == 0
 }
 
 call talk with "multiply(4, 6) - Expected: 24, Result: " + (call toString with (call multiply with 4, 6))
@@ -61,17 +61,17 @@ call talk with "isEven(7) - Expected: false, Result: " + (call toString with (ca
 call talk with "Function Recursion"
 
 create function called factorial using number n {
-	if n equals 0 {
+	if n == 0 {
 		return 1
 	}
 	return n * (call factorial with n - 1)
 }
 
 create function called fibonacci using number n {
-	if n equals 0 {
+	if n == 0 {
 		return 0
 	}
-	if n equals 1 {
+	if n == 1 {
 		return 1
 	}
 	return (call fibonacci with n - 1) + (call fibonacci with n - 2)
@@ -90,16 +90,16 @@ create function called calculateDiscount using number price, boolean isVIP {
 	create number called discount
 	set discount to 0
 
-	if price equals 0 {
+	if price == 0 {
 		return 0
 	}
 
 	if isVIP {
 		set discount to price * 0.2
 	} else {
-		if price equals 100 {
+		if price == 100 {
 			set discount to 10
-		} else if price equals 50 {
+		} else if price == 50 {
 			set discount to 5
 		} else {
 			set discount to price * 0.05
@@ -207,7 +207,7 @@ call talk with "applyOperation(10, 5) - Expected final result: 30, Result: " + (
 call talk with "Function Error Handling"
 
 create function called divideNumbers using number a, number b {
-	if b equals 0 {
+	if b == 0 {
 		call talk with "Error: Cannot divide by zero"
 		return 0
 	}
@@ -225,7 +225,7 @@ call talk with "divideNumbers(10, 0) - Expected: Error message and 0, Result: " 
 call talk with "Function with Default Behaviors"
 
 create function called greetWithDefault using string name {
-	if name equals "" {
+	if name == "" {
 		return "Hello, Guest!"
 	}
 	return "Hello, " + name + "!"
