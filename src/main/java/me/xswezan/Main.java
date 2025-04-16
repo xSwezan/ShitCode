@@ -52,7 +52,7 @@ public class Main {
         Vector<Token> tokens = Lexer.Lexilize(content);
         Environment global = new Environment();
 
-        global.SetVariable("takeInput", new RuntimeNativeFunction(args -> {
+        global.SetVariable("takeInput", new RuntimeNativeFunction(_ -> {
             return new RuntimeString(scanner.nextLine());
         }));
 
