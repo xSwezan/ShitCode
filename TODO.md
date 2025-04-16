@@ -1,5 +1,3 @@
-# else, elseif
-# Negative numbers
 # List
 ```sh
 create list called myList

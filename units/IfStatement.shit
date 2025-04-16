@@ -1,0 +1,404 @@
+# AI Generated Unit Tests for If Statements
+# Testing if, else if, and else control structures
+
+#>-----------------------<#
+#>- Basic If Statements -<#
+#>-----------------------<#
+
+call talk with "Basic If Statements"
+
+# Simple if statement with true condition
+create boolean called result1
+set result1 to false
+
+if true {
+    set result1 to true
+}
+call talk with "if true - Expected: true, Result: " + (call toString with result1)
+
+# Simple if statement with false condition
+create boolean called result2
+set result2 to false
+
+if false {
+    set result2 to true
+}
+call talk with "if false - Expected: false, Result: " + (call toString with result2)
+
+# If statement with boolean variable condition
+create boolean called condition
+set condition to true
+create boolean called result3
+set result3 to false
+
+if condition {
+    set result3 to true
+}
+call talk with "if condition (true) - Expected: true, Result: " + (call toString with result3)
+
+#>----------------------<#
+#>- If-Else Statements -<#
+#>----------------------<#
+
+call talk with "If-Else Statements"
+
+# If-else with true condition
+create boolean called ifElseResult1
+set ifElseResult1 to false
+create boolean called elseRan1
+set elseRan1 to false
+
+if true {
+    set ifElseResult1 to true
+} else {
+    set elseRan1 to true
+}
+call talk with "if true else - If block ran: " + (call toString with ifElseResult1)
+call talk with "if true else - Else block ran: " + (call toString with elseRan1)
+
+# If-else with false condition
+create boolean called ifElseResult2
+set ifElseResult2 to false
+create boolean called elseRan2
+set elseRan2 to false
+
+if false {
+    set ifElseResult2 to true
+} else {
+    set elseRan2 to true
+}
+call talk with "if false else - If block ran: " + (call toString with ifElseResult2)
+call talk with "if false else - Else block ran: " + (call toString with elseRan2)
+
+#>-----------------------------<#
+#>- If-ElseIf-Else Statements -<#
+#>-----------------------------<#
+
+call talk with "If-ElseIf-Else Statements"
+
+# If-elseif-else with first condition true
+create number called block1
+set block1 to 0
+
+if true {
+    set block1 to 1
+} else if true {
+    set block1 to 2
+} else {
+    set block1 to 3
+}
+call talk with "if true elseif true else - Expected block 1, Result: " + (call toString with block1)
+
+# If-elseif-else with first condition false, second true
+create number called block2
+set block2 to 0
+
+if false {
+    set block2 to 1
+} else if true {
+    set block2 to 2
+} else {
+    set block2 to 3
+}
+call talk with "if false elseif true else - Expected block 2, Result: " + (call toString with block2)
+
+# If-elseif-else with all conditions false
+create number called block3
+set block3 to 0
+
+if false {
+    set block3 to 1
+} else if false {
+    set block3 to 2
+} else {
+    set block3 to 3
+}
+call talk with "if false elseif false else - Expected block 3, Result: " + (call toString with block3)
+
+#>------------------------------<#
+#>- Multiple ElseIf Statements -<#
+#>------------------------------<#
+
+call talk with "Multiple ElseIf Statements"
+
+create function called testMultipleElseIf using number value {
+    create number called result
+    set result to 0
+
+    if value < 0 {
+        set result to -1
+    } else if value == 0 {
+        set result to 0
+    } else if value > 0 and value < 10 {
+        set result to 1
+    } else if value >= 10 and value < 20 {
+        set result to 2
+    } else {
+        set result to 3
+    }
+
+    return result
+}
+
+call talk with "testMultipleElseIf(-5) - Expected: -1, Result: " + (call toString with (call testMultipleElseIf with -5))
+call talk with "testMultipleElseIf(0) - Expected: 0, Result: " + (call toString with (call testMultipleElseIf with 0))
+call talk with "testMultipleElseIf(5) - Expected: 1, Result: " + (call toString with (call testMultipleElseIf with 5))
+call talk with "testMultipleElseIf(15) - Expected: 2, Result: " + (call toString with (call testMultipleElseIf with 15))
+call talk with "testMultipleElseIf(25) - Expected: 3, Result: " + (call toString with (call testMultipleElseIf with 25))
+
+#>-----------------------------<#
+#>- Nested If-Else Statements -<#
+#>-----------------------------<#
+
+call talk with "Nested If-Else Statements"
+
+create function called testNestedIf using number x, number y {
+    create string called result
+    set result to "Unknown"
+
+    if x > 0 {
+        if y > 0 {
+            set result to "Quadrant 1"
+        } else if y < 0 {
+            set result to "Quadrant 4"
+        } else {
+            set result to "Positive X-axis"
+        }
+    } else if x < 0 {
+        if y > 0 {
+            set result to "Quadrant 2"
+        } else if y < 0 {
+            set result to "Quadrant 3"
+        } else {
+            set result to "Negative X-axis"
+        }
+    } else {
+        if y > 0 {
+            set result to "Positive Y-axis"
+        } else if y < 0 {
+            set result to "Negative Y-axis"
+        } else {
+            set result to "Origin"
+        }
+    }
+
+    return result
+}
+
+call talk with "testNestedIf(5, 5) - Expected: Quadrant 1, Result: " + (call testNestedIf with 5, 5)
+call talk with "testNestedIf(-5, 5) - Expected: Quadrant 2, Result: " + (call testNestedIf with -5, 5)
+call talk with "testNestedIf(-5, -5) - Expected: Quadrant 3, Result: " + (call testNestedIf with -5, -5)
+call talk with "testNestedIf(5, -5) - Expected: Quadrant 4, Result: " + (call testNestedIf with 5, -5)
+call talk with "testNestedIf(0, 0) - Expected: Origin, Result: " + (call testNestedIf with 0, 0)
+call talk with "testNestedIf(5, 0) - Expected: Positive X-axis, Result: " + (call testNestedIf with 5, 0)
+call talk with "testNestedIf(-5, 0) - Expected: Negative X-axis, Result: " + (call testNestedIf with -5, 0)
+call talk with "testNestedIf(0, 5) - Expected: Positive Y-axis, Result: " + (call testNestedIf with 0, 5)
+call talk with "testNestedIf(0, -5) - Expected: Negative Y-axis, Result: " + (call testNestedIf with 0, -5)
+
+#>-----------------------------------<#
+#>- Complex Conditional Expressions -<#
+#>-----------------------------------<#
+
+call talk with "Complex Conditional Expressions"
+
+create function called evaluateExpression using number a, number b, number c {
+    create string called result
+    set result to "None"
+
+    if (a > b and b > c) or (a < b and b < c) {
+        set result to "Monotonic"
+    } else if a == b and b == c {
+        set result to "All Equal"
+    } else if (a == b and b != c) or (a != b and b == c) or (a == c and a != b) {
+        set result to "Two Equal"
+    } else {
+        set result to "All Different"
+    }
+
+    return result
+}
+
+call talk with "evaluateExpression(1, 2, 3) - Expected: Monotonic, Result: " + (call evaluateExpression with 1, 2, 3)
+call talk with "evaluateExpression(3, 2, 1) - Expected: Monotonic, Result: " + (call evaluateExpression with 3, 2, 1)
+call talk with "evaluateExpression(2, 2, 2) - Expected: All Equal, Result: " + (call evaluateExpression with 2, 2, 2)
+call talk with "evaluateExpression(2, 2, 3) - Expected: Two Equal, Result: " + (call evaluateExpression with 2, 2, 3)
+call talk with "evaluateExpression(1, 3, 3) - Expected: Two Equal, Result: " + (call evaluateExpression with 1, 3, 3)
+call talk with "evaluateExpression(3, 1, 3) - Expected: Two Equal, Result: " + (call evaluateExpression with 3, 1, 3)
+call talk with "evaluateExpression(1, 3, 2) - Expected: All Different, Result: " + (call evaluateExpression with 1, 3, 2)
+
+#>--------------------------------<#
+#>- If Statements with Functions -<#
+#>--------------------------------<#
+
+call talk with "If Statements with Functions"
+
+create function called isEven using number n {
+    if n % 2 == 0 {
+        return true
+    } else {
+        return false
+    }
+}
+
+create function called categorizeNumber using number n {
+    if n < 0 {
+        return "Negative"
+    } else if n == 0 {
+        return "Zero"
+    } else if (call isEven with n) {
+        return "Positive Even"
+    } else {
+        return "Positive Odd"
+    }
+}
+
+call talk with "categorizeNumber(-10) - Expected: Negative, Result: " + (call categorizeNumber with -10)
+call talk with "categorizeNumber(0) - Expected: Zero, Result: " + (call categorizeNumber with 0)
+call talk with "categorizeNumber(8) - Expected: Positive Even, Result: " + (call categorizeNumber with 8)
+call talk with "categorizeNumber(7) - Expected: Positive Odd, Result: " + (call categorizeNumber with 7)
+
+#>-------------------<#
+#>- Empty If Blocks -<#
+#>-------------------<#
+
+call talk with "Empty If Blocks"
+
+create boolean called emptyBlocksExecuted
+set emptyBlocksExecuted to true
+
+# Test empty if/else blocks still execute properly
+if true {
+    # Empty block
+} else {
+    set emptyBlocksExecuted to false
+}
+
+call talk with "Empty if block - Expected: true, Result: " + (call toString with emptyBlocksExecuted)
+
+# Test empty else-if/else blocks
+create boolean called emptyElseIfExecuted
+set emptyElseIfExecuted to true
+
+if false {
+    set emptyElseIfExecuted to false
+} else if true {
+    # Empty block
+} else {
+    set emptyElseIfExecuted to false
+}
+
+call talk with "Empty else if block - Expected: true, Result: " + (call toString with emptyElseIfExecuted)
+
+#>----------------------------------------<#
+#>- If Statements with Boolean Functions -<#
+#>----------------------------------------<#
+
+call talk with "If Statements with Boolean Functions"
+
+create function called isPositive using number n {
+    return n > 0
+}
+
+create function called isNegative using number n {
+    return n < 0
+}
+
+create function called checkNumber using number n {
+    create string called result
+    set result to ""
+
+    if (call isPositive with n) {
+        set result to result + "Positive"
+    }
+
+    if (call isNegative with n) {
+        set result to result + "Negative"
+    }
+
+    if not ((call isPositive with n) or (call isNegative with n)) {
+        set result to "Zero"
+    }
+
+    return result
+}
+
+call talk with "checkNumber(-5) - Expected: Negative, Result: " + (call checkNumber with -5)
+call talk with "checkNumber(5) - Expected: Positive, Result: " + (call checkNumber with 5)
+call talk with "checkNumber(0) - Expected: Zero, Result: " + (call checkNumber with 0)
+
+#>------------------------------------------<#
+#>- Short-Circuit Evaluation in Conditions -<#
+#>------------------------------------------<#
+
+call talk with "Short-Circuit Evaluation in Conditions"
+
+create function called divideIfPossible using number a, number b {
+    create number called result
+    set result to 0
+
+    # Test for short-circuit evaluation in 'and' conditions
+    # Second condition should only be evaluated if first is true
+    if b != 0 and a / b > 1 {
+        set result to a / b
+    } else {
+        set result to -1
+    }
+
+    return result
+}
+
+create function called testShortCircuit using boolean runSecondTest {
+    create boolean called secondTestRan
+    set secondTestRan to false
+
+    # First function to test short circuit
+    create function called firstTest {
+        return false
+    }
+
+    # Second function that sets a flag when run
+    create function called secondTest {
+        set secondTestRan to true
+        return true
+    }
+
+    # Test 'and' short circuit (secondTest should not run)
+    if (call firstTest) and (runSecondTest and (call secondTest)) {
+        # This block should not execute
+    }
+
+    return secondTestRan
+}
+
+call talk with "divideIfPossible(10, 2) - Expected: 5, Result: " + (call toString with (call divideIfPossible with 10, 2))
+call talk with "divideIfPossible(10, 0) - Expected: -1, Result: " + (call toString with (call divideIfPossible with 10, 0))
+call talk with "divideIfPossible(1, 2) - Expected: -1, Result: " + (call toString with (call divideIfPossible with 1, 2))
+
+call talk with "testShortCircuit(true) - Expected: false, Result: " + (call toString with (call testShortCircuit with true))
+
+#>-----------------------------------------<#
+#>- If Statements with String Comparisons -<#
+#>-----------------------------------------<#
+
+call talk with "If Statements with String Comparisons"
+
+create function called checkPassword using string password {
+    create string called result
+
+    if password == "" {
+        set result to "Empty password"
+    } else if password == "password123" {
+        set result to "Common password"
+    } else if password == "admin" {
+        set result to "Admin password"
+    } else {
+        set result to "Custom password"
+    }
+
+    return result
+}
+
+call talk with "checkPassword('') - Expected: Empty password, Result: " + (call checkPassword with "")
+call talk with "checkPassword('password123') - Expected: Common password, Result: " + (call checkPassword with "password123")
+call talk with "checkPassword('admin') - Expected: Admin password, Result: " + (call checkPassword with "admin")
+call talk with "checkPassword('secure123!') - Expected: Custom password, Result: " + (call checkPassword with "secure123!")

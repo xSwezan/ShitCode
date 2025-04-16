@@ -20,7 +20,7 @@ public class Environment {
             this.value = value;
         }
 
-        public String toString() { return Double.toString(value); }
+        public String toString() { return Double.toString(value).replaceAll("\\.0+$", ""); }
     }
 
     public static class RuntimeString extends RuntimeValue {

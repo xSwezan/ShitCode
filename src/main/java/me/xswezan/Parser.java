@@ -1,5 +1,6 @@
 package me.xswezan;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import me.xswezan.Lexer.Token;
@@ -51,9 +52,13 @@ public class Parser {
         Body body;
     }
 
-    static class IfStatement extends Statement {
+    static class IfStatementClause {
         Expression condition;
         Body body;
+    }
+
+    static class IfStatement extends Statement {
+        ArrayList<IfStatementClause> clauses = new ArrayList<IfStatementClause>();
     }
 
     static class ReturnStatement extends Statement {
@@ -88,6 +93,7 @@ public class Parser {
 
     enum UnaryOperatorType {
         NOT,
+        NEGATION,
     }
 
     static class Expression extends Node {}
@@ -318,8 +324,37 @@ public class Parser {
         eat(); // Eat if keyword
 
         IfStatement statement = new IfStatement();
-        statement.condition = parseExpression();
-        statement.body = parseBody();
+
+        { // Main if
+            IfStatementClause clause = new IfStatementClause();
+            clause.condition = parseExpression();
+            clause.body = parseBody();
+            statement.clauses.add(clause);
+        }
+
+        boolean usedElse = false;
+
+        while (atIs(TokenType.KEYWORD_ELSE)) {
+            if (usedElse) error("Else clause is already defined in if statement!");
+
+            eat(); // Eat else
+
+            IfStatementClause clause = new IfStatementClause();
+
+            if (atIs(TokenType.KEYWORD_IF)) {
+                eat();
+                clause.condition = parseExpression();
+            } else {
+                usedElse = true;
+
+                BooleanLiteral bool = new BooleanLiteral(); // This sucks lol
+                bool.value = true;
+                clause.condition = bool;
+            }
+
+            clause.body = parseBody();
+            statement.clauses.add(clause);
+        }
 
         return statement;
     }
@@ -568,6 +603,15 @@ public class Parser {
                 expect(TokenType.CLOSE_PAREN, "Expected closing parenthesis following parenthesized expression! " + value);
                 return value;
             }
+
+            case TokenType.OPERATOR_SUBTRACT: {
+                eat(); // Eat -
+                UnaryExpression expression = new UnaryExpression();
+                expression.expression = parseExpression();
+                expression.operator = UnaryOperatorType.NEGATION;
+                return expression;
+            }
+
             default: error("Unexpected token found during parsing! " + at().type);
         }
 

@@ -40,6 +40,7 @@ public class Lexer {
 
         // Binary
         KEYWORD_IF,
+        KEYWORD_ELSE,
         KEYWORD_NOT,
         KEYWORD_AND,
         KEYWORD_OR,
@@ -168,7 +169,7 @@ public class Lexer {
             } else if (c == '%') {
                 Token token = new Token();
                 token.raw = s;
-                token.type = TokenType.OPERATOR_MULTIPLY;
+                token.type = TokenType.OPERATOR_MODULUS;
                 tokens.add(token);
             } else if (c == '/') {
                 Token token = new Token();
@@ -289,6 +290,7 @@ public class Lexer {
             case "decrease": token.type = TokenType.KEYWORD_DECREASE; break;
 
             case "if": token.type = TokenType.KEYWORD_IF; break;
+            case "else": token.type = TokenType.KEYWORD_ELSE; break;
             case "not": token.type = TokenType.KEYWORD_NOT; break;
             case "and": token.type = TokenType.KEYWORD_AND; break;
             case "or": token.type = TokenType.KEYWORD_OR; break;

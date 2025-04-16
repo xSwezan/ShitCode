@@ -19,6 +19,7 @@ import me.xswezan.Parser.FunctionDeclarationParameter;
 import me.xswezan.Parser.FunctionDeclarationStatement;
 import me.xswezan.Parser.IdentifierExpression;
 import me.xswezan.Parser.IfStatement;
+import me.xswezan.Parser.IfStatementClause;
 import me.xswezan.Parser.MemberExpression;
 import me.xswezan.Parser.Node;
 import me.xswezan.Parser.NumericLiteral;
@@ -165,16 +166,19 @@ public class Interpreter {
     }
 
     public static void EvaluateIfStatement(IfStatement statement, Environment environment) {
-        RuntimeValue condition = EvaluateExpression(statement.condition, environment);
-        if (condition instanceof RuntimeBoolean bool) {
-            if (bool.value == false) return;
+        for (IfStatementClause clause : statement.clauses) {
+            RuntimeValue condition = EvaluateExpression(clause.condition, environment);
+            if (condition instanceof RuntimeBoolean bool) {
+                if (bool.value == false) continue;
 
-            Environment scope = new Environment();
-            scope.parent = environment;
+                Environment scope = new Environment();
+                scope.parent = environment;
 
-            EvaluateBody(statement.body, scope);
-        } else {
-            throw new RuntimeException("Expected while condition expression to be a boolean!");
+                EvaluateBody(clause.body, scope);
+                return;
+            }
+
+            throw new RuntimeException("Expected if clause condition expression to be a boolean!");
         }
     }
 
@@ -221,6 +225,12 @@ public class Interpreter {
             case UnaryOperatorType.NOT: {
                 if (value instanceof RuntimeBoolean bool) {
                     return new RuntimeBoolean(!bool.value);
+                }
+            }
+
+            case UnaryOperatorType.NEGATION: {
+                if (value instanceof RuntimeNumber number) {
+                    return new RuntimeNumber(-number.value);
                 }
             }
         }
