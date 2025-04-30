@@ -26,4 +26,39 @@ This is a scripting language made in Java for a school project. When designing t
 - Native functions
 
 ### Unit tests
-The language is mostly unit tested (coverage not calculated). These unit tests are AI-generated and are not thoroughly checked. Tests can be found in [./units](https://github.com/xSwezan/ShitCode/tree/main/units).
+The language is mostly unit tested (coverage not calculated). These unit tests are AI-generated and are not thoroughly checked, because I'm lazy. Tests can be found in [./units](https://github.com/xSwezan/ShitCode/tree/main/units).
+
+
+### Code examples
+
+<details>
+<summary>Variable declaration</summary>
+
+```
+create number called foo
+set foo to 10
+
+create number called bar
+set bar to foo * 2
+```
+</details>
+
+
+
+<details>
+<summary>Function declaration</summary>
+
+```
+create function called add using number a, number b {
+    return a + b
+}
+
+create number called sum
+set sum to call add with 1, 5
+
+call talk with "Sum is: " + sum
+```
+</details>
+
+> [!TIP]
+> More code examples can be found in the [unit tests](https://github.com/xSwezan/ShitCode/tree/main/units)
