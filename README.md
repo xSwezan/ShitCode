@@ -62,3 +62,12 @@ call talk with "Sum is: " + sum
 
 > [!TIP]
 > More code examples can be found in the [unit tests](https://github.com/xSwezan/ShitCode/tree/main/units)
+
+### How it works (simplified)
+
+The program can be shortened down to 3 parts:
+- Lexilizing
+- Parsing
+- Interpreting
+
+The whole program starts with a string, a raw string containing the code you want to run. This string is sent through a *Lexilizer*, which converts this raw string to a list of tokens. These tokens have different types and contain the raw string. A token is basically a group of characters, this might be a keyword, string, number, or an identifier. The tokens are sent to a *Parser*, which parses the tokens, and produces expressions and statements of different kinds. Among others, it may create: IfStatement, WhileStatement, RepeatStatement, CallExpression, BinaryExpression, or UnaryExpression. These are placed in a tree-like structure, where the code begins with a Body, and the body contains Nodes (which is a Statement or an Expression). The *Interpreter* then traverses this tree in chronological order and performs the necessary logic. This might be for example variable declaration, if statements, member access, and more.
